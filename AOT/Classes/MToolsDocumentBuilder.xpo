@@ -31,6 +31,7 @@ Formatversion: 1
       SOURCE #checkDocument
         #protected boolean checkDocument()
         #{
+        #;
         #    if (!WinAPI::fileExists(template))
         #    {
         #        return checkFailed(strfmt("@SYS60367", template));
@@ -101,7 +102,6 @@ Formatversion: 1
         #    int len = strlen(templateData), blockNameLen, leftQuoteStart, leftQuoteEnd, rightQuoteStart, rightQuoteEnd;
         #    str blockName;
         #;
-        #
         #    do
         #    {
         #        scanPos ++;
@@ -128,7 +128,6 @@ Formatversion: 1
         #        }
         #    }
         #    while (scanPos);
-        #
         #    return ret;
         #}
       ENDSOURCE
@@ -170,7 +169,6 @@ Formatversion: 1
         #        }
         #    }
         #;
-        #
         #    nextBlockStart = 1;
         #    nextBlockName = #zeroBlockName;
         #    for (i = 1; i <= conlen(_nameBlocks); i ++)
@@ -186,7 +184,6 @@ Formatversion: 1
         #    curBlockName = nextBlockName;
         #    curBlockEnd = len;
         #    addRet();
-        #
         #    return ret;
         #}
       ENDSOURCE
@@ -207,7 +204,7 @@ Formatversion: 1
         #    }
         #    if (!res)
         #    {
-        #        throw error(strfmt('Каталог "%1" не существует', tempDir));
+        #        throw error(strfmt("Каталог '%1' не существует", tempDir));
         #    }
         #    return tempDir;
         #}
@@ -229,7 +226,7 @@ Formatversion: 1
         #    {
         #        if (_blockNum == 0 && !isDocumentEmpty)
         #        {
-        #            throw error('Попытка вывода нулевого блока несколько раз.');
+        #            throw error("Попытка вывода нулевого блока несколько раз");
         #        }
         #        if (_blockNum > 0 && isDocumentEmpty)
         #        {
@@ -238,7 +235,7 @@ Formatversion: 1
         #        }
         #        if(_blockNum == lastBlock && isDocumentReady)
         #        {
-        #            throw error('Попытка вывода после завершения построения документа.');
+        #            throw error("Попытка вывода после завершения построения документа");
         #        }
         #        block = templateBlocks.lookup(_blockNum);
         #        for(i = 1; i <= len; i++)
@@ -256,7 +253,7 @@ Formatversion: 1
         #    }
         #    else
         #    {
-        #        throw error('Заданного блока не существует');
+        #        throw error("Заданного блока не существует");
         #    }
         #}
       ENDSOURCE
@@ -284,28 +281,30 @@ Formatversion: 1
         #}
       ENDSOURCE
       SOURCE #makeDocument
-        ##File
         #protected boolean makeDocument()
         #{
+        #    #File
+        #
         #    FileIoPermission ioPermission;
         #    str fileExtention;
         #;
         #    fileExtention = conpeek(filenamesplit(target), 3);
         #    if (strupr(fileExtention) != strupr(documentFileExtension))
         #    {
-        #        return checkfailed(strfmt('Расширение файла документа "%1" не соответствует требуемому ("%2")', fileExtention, documentFileExtension));
+        #        return checkfailed(strfmt("Расширение файла документа '%1' не соответствует требуемому ('%2')", fileExtention, documentFileExtension));
         #    }
         #    if (WinApi::fileExists(target))
         #    {
-        #        return checkfailed(strfmt('Файл %1 уже существует', target));
+        #        return checkfailed(strfmt("Файл '%1' уже существует", target));
         #    }
         #    ioPermission = new FileIoPermission(target, #io_write);
         #    ioPermission.assert();
+        #    //BP deviation documented
         #    textIo = new TextIo(target, #io_write, 65001); //UTF-8
         #    CodeAccessPermission::revertAssert();
         #    if (!textIo)
         #    {
-        #        return checkfailed(strfmt('Невозможно открыть файл %1 для записи', target));
+        #        return checkfailed(strfmt("Невозможно открыть файл '%1' для записи", target));
         #    }
         #    return true;
         #}
@@ -389,9 +388,10 @@ Formatversion: 1
       SOURCE #prepare
         #public void prepare()
         #{
+        #;
         #    if (!this.checkDocument())
         #    {
-        #        throw warning('Невозможно загрузить шаблон документа');
+        #        throw warning("Невозможно загрузить шаблон документа");
         #    }
         #    if (isDocumentTemporary)
         #    {
@@ -399,11 +399,11 @@ Formatversion: 1
         #    }
         #    if (!this.makeDocument())
         #    {
-        #        throw warning('Невозможно создать файл документа');
+        #        throw warning("Невозможно создать файл документа");
         #    }
         #    if (!this.readTemplate())
         #    {
-        #        throw warning('Невозможно разобрать шаблон документа');
+        #        throw warning("Невозможно разобрать шаблон документа");
         #    }
         #    isDocumentPrepared = true;
         #}
@@ -423,7 +423,6 @@ Formatversion: 1
       SOURCE #prepareTemplate
         #protected void prepareTemplate()
         #{
-        #;
         #}
       ENDSOURCE
       SOURCE #readTemplate
@@ -439,7 +438,7 @@ Formatversion: 1
         #
         #    if (templateBlocks.elements() <= 2)
         #    {
-        #        return checkfailed('В шаблоне документа должно быть более двух блоков');
+        #        return checkfailed("В шаблоне документа должно быть более двух блоков");
         #    }
         #    return true;
         #}
@@ -462,9 +461,10 @@ Formatversion: 1
         #}
       ENDSOURCE
       SOURCE #readTemplateFile
-        ##CLRInterop
         #protected void readTemplateFile()
         #{
+        #    #CLRInterop
+        #
         #    InteropPermission permission;
         #    System.IO.FileStream fileStream;
         #    System.IO.StreamReader streamReader;
@@ -530,10 +530,11 @@ Formatversion: 1
         #}
       ENDSOURCE
       SOURCE #tempCleanup
-        ##define.tempCleanupMask('*.*')
-        ##WinApi
         #protected void tempCleanup()
         #{
+        #    #define.tempCleanupMask('*.*')
+        #    #WinApi
+        #
         #    FilePath    filePath;
         #    FileName    fileName;
         #    int         fileHandle, attrs;
@@ -553,7 +554,7 @@ Formatversion: 1
         #            res = WinApi::deleteFile(_file);
         #            if (res)
         #            {
-        #                warning(strfmt('Не удаётся удалить временный файл "%1"', _file));
+        #                warning(strfmt("Не удаётся удалить временный файл '%1'", _file));
         #            }
         #        }
         #    }
@@ -587,14 +588,15 @@ Formatversion: 1
         #}
       ENDSOURCE
       SOURCE #getFileTimeLocal
-        ##winapi
         #public client static container getFileTimeLocal(Filename filename, int type = 0)
         #{
+        #    #WinApi
+        #
         #    int       hFile       = WinAPI::createFile(filename, #OPEN_EXISTING);
         #    Binary    filetime;
         #    Binary    systemTime;
         #    Binary    localTime;
-        #
+        #;
         #    if (hFile)
         #    {
         #        filetime    = WinAPI::getFileTime(hFile, type);
@@ -611,7 +613,6 @@ Formatversion: 1
         #        }
         #    }
         #    return connull();
-        #
         #}
       ENDSOURCE
     ENDMETHODS

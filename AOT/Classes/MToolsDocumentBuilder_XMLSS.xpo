@@ -30,8 +30,11 @@ Formatversion: 1
         #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
         #    {
         #        sheet = excelDocument.getWorkSheet(i);
+        #        //BP deviation documented
         #        cells = sheet.cells();
+        #        //BP deviation documented
         #        range = cells.entirerow();
+        #        //BP deviation documented
         #        range.autofit();
         #    }
         #}
@@ -48,6 +51,11 @@ Formatversion: 1
         #    #define.rowElementStartTag('<Row')
         #    #define.rowElementEndTag('</Row>')
         #    #define.XMLFileExtension('.xml')
+        #
+        #    #Excel
+        #
+        #    //look XlEnableSelection Enumeration for possible _enableSelection values
+        #    #define.xlNoSelection(-4142)
         #}
       ENDSOURCE
       SOURCE #defaultBlockNameLeftQuote
@@ -87,9 +95,10 @@ Formatversion: 1
         #}
       ENDSOURCE
       SOURCE #displayFullScreen
-        ##define.xlNormal(-4143)
         #public void displayFullScreen(boolean _display)
         #{
+        #    #define.xlNormal(-4143)
+        #
         #    Com doc, app;
         #;
         #    if (!isDocumentOpen)
@@ -97,13 +106,16 @@ Formatversion: 1
         #        this.open();
         #    }
         #    doc = excelDocument.getComDocument();
+        #    //BP deviation documented
         #    app = doc.application();
         #    if (_display)
         #    {
+        #        //BP deviation documented
         #        app.displayfullscreen(true);
         #    }
         #    else
         #    {
+        #        //BP deviation documented
         #        app.windowState(#xlNormal);
         #    }
         #}
@@ -111,15 +123,18 @@ Formatversion: 1
       SOURCE #displayGridLines
         #public void displayGridLines(boolean _display)
         #{
-        #    Com     doc, app, activeWindow;
+        #    Com doc, app, activeWindow;
         #;
         #    if (!isDocumentOpen)
         #    {
         #        this.open();
         #    }
         #    doc = excelDocument.getComDocument();
+        #    //BP deviation documented
         #    app = doc.application();
+        #    //BP deviation documented
         #    activeWindow = app.activeWindow();
+        #    //BP deviation documented
         #    activeWindow.displayGridLines(_display);
         #}
       ENDSOURCE
@@ -133,25 +148,21 @@ Formatversion: 1
         #    int scanPos;
         #    int len = strlen(templateData);
         #;
-        #
         #    for (i = 1; i <= conlen(_blocks); i ++)
         #    {
         #        elementStart = 0;
         #        elementEnd   = 0;
         #        [blockStart, blockEnd, blockName] = conpeek(_blocks, i);
-        #
         #        scanPos = strscan(templateData, _startTag, blockStart - 1, - (blockStart - 1));
         #        if (!strscan(templateData, _endTag, blockStart - 1, - (blockStart - scanPos - strlen(_startTag))))
         #        {
         #            elementStart = scanPos;
         #        }
-        #
         #        scanPos = strscan(templateData, _endTag, blockEnd + 1, len - blockEnd - 1);
         #        if (!strscan(templateData, _startTag, blockEnd + 1,  scanPos - blockEnd - 1))
         #        {
         #            elementEnd = scanPos + strlen(_endTag) - 1;
         #        }
-        #
         #        if (elementStart && elementEnd)
         #        {
         #            ret += [[elementStart, elementEnd, blockName]];
@@ -161,7 +172,6 @@ Formatversion: 1
         #            ret += [[blockStart, blockEnd, blockName]];
         #        }
         #    }
-        #
         #    return ret;
         #}
       ENDSOURCE
@@ -181,7 +191,6 @@ Formatversion: 1
       SOURCE #getComExcelDocument
         #public ComExcelDocument_RU getComExcelDocument()
         #{
-        #;
         #    return excelDocument;
         #}
       ENDSOURCE
@@ -306,19 +315,19 @@ Formatversion: 1
         #    int     i, shFrom, shCount;
         #    str     password = _password;
         #;
-        #
         #    if (!isDocumentOpen)
         #    {
         #        this.open();
         #    }
-        #
         #    doc = excelDocument.getComDocument();
+        #    //BP deviation documented
         #    app = doc.application();
+        #    //BP deviation documented
         #    sheets = app.sheets();
-        #
         #    if (!_worksheet)
         #    {
         #        shFrom = 1;
+        #        //BP deviation documented
         #        shCount = sheets.count();
         #    }
         #    else
@@ -326,15 +335,15 @@ Formatversion: 1
         #        shFrom = _worksheet;
         #        shCount = 1;
         #    }
-        #
         #    if (_randomPassword)
         #    {
         #        password = guid2str(newguid());
         #    }
-        #
         #    for (i = shFrom; i <= shCount; i++)
         #    {
+        #        //BP deviation documented
         #        activeSheet = sheets.Item(i);
+        #        //BP deviation documented
         #        activeSheet.protect(
         #            password,
         #            _drawingObjects,
@@ -366,12 +375,12 @@ Formatversion: 1
         #        this.open();
         #    }
         #    doc = excelDocument.getComDocument();
+        #    //BP deviation documented
         #    doc.save();
         #    isDocumentSaved = true;
         #}
       ENDSOURCE
       SOURCE #saveAs
-        ##Excel
         #public void saveAs(boolean _removeOriginal = true, FileName _fileName = '', int _fileFormat = #xlWorkbookNormal,
         #                   str _password = '', str _writeResPassword = '', boolean _readOnlyRecommended = false,
         #                   boolean _createBackup = false, int _accessMode = #xlNoChange, int _conflictResolution = #xlUserResolution,
@@ -390,12 +399,14 @@ Formatversion: 1
         #        [path, name] = filenamesplit(target);
         #        fileName = path + name;
         #    }
+        #    //BP deviation documented
         #    doc.saveas(fileName, _fileFormat, _password, _writeResPassword, _readOnlyRecommended,
         #               _createBackup, _accessMode, _conflictResolution, _addToMru, 0, 0, false);
         #    if (_removeOriginal)
         #    {
         #        WinApi::deleteFile(target);
         #    }
+        #    //BP deviation documented
         #    target = doc.fullName();
         #    isDocumentSaved = true;
         #}
@@ -423,23 +434,28 @@ Formatversion: 1
         #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
         #    {
         #        sheet = excelDocument.getWorkSheet(i);
+        #        //BP deviation documented
         #        pageSetup = sheet.PageSetup();
         #        switch (_hf)
         #        {
         #            case MToolsHeaderFooter::LeftHeader:
+        #                //BP deviation documented
         #                pageSetup.LeftHeader(text);
         #                break;
         #            case MToolsHeaderFooter::RightHeader:
+        #                //BP deviation documented
         #                pageSetup.RightHeader(text);
         #                break;
         #            case MToolsHeaderFooter::LeftFooter:
+        #                //BP deviation documented
         #                pageSetup.LeftFooter(text);
         #                break;
         #            case MToolsHeaderFooter::RightFooter:
+        #                //BP deviation documented
         #                pageSetup.RightFooter(text);
         #                break;
         #            default:
-        #                throw error('некорректное использование метода');
+        #                throw error("Некорректное использование метода");
         #        }
         #    }
         #}
@@ -456,6 +472,7 @@ Formatversion: 1
         #        this.open();
         #    }
         #    doc = excelDocument.getComDocument();
+        #    //BP deviation documented
         #    app = doc.application();
         #
         #    this.setPageNumber();
@@ -464,9 +481,12 @@ Formatversion: 1
         #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
         #    {
         #        sheet = excelDocument.getWorkSheet(i);
+        #        //BP deviation documented
         #        pageSetup = sheet.PageSetup();
+        #        //BP deviation documented
         #        pageSetup.LeftHeader(companyInfo.Name);
-        #        pageSetup.RightFooter('Подготовлено с использованием системы Microsoft Dynamics AX');
+        #        //BP deviation documented
+        #        pageSetup.RightFooter("Подготовлено с использованием системы Microsoft Dynamics AX");
         #    }
         #}
       ENDSOURCE
@@ -484,7 +504,9 @@ Formatversion: 1
         #        this.open();
         #    }
         #    doc = excelDocument.getComDocument();
+        #    //BP deviation documented
         #    app = doc.application();
+        #    //BP deviation documented
         #    ver = app.version();
         #    if (ver like '12*')
         #    {
@@ -496,35 +518,38 @@ Formatversion: 1
         #    }
         #    else
         #    {
-        #        text = strfmt('Версия Excel не поддерживается (%2)', ver);
+        #        text = strfmt("Версия Excel не поддерживается (%2)", ver);
         #    }
         #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
         #    {
         #        sheet = excelDocument.getWorkSheet(i);
+        #        //BP deviation documented
         #        pageSetup = sheet.PageSetup();
         #        switch (_hf)
         #        {
         #            case MToolsHeaderFooter::LeftHeader:
+        #                //BP deviation documented
         #                pageSetup.LeftHeader(text);
         #                break;
         #            case MToolsHeaderFooter::RightHeader:
+        #                //BP deviation documented
         #                pageSetup.RightHeader(text);
         #                break;
         #            case MToolsHeaderFooter::LeftFooter:
+        #                //BP deviation documented
         #                pageSetup.LeftFooter(text);
         #                break;
         #            case MToolsHeaderFooter::RightFooter:
+        #                //BP deviation documented
         #                pageSetup.RightFooter(text);
         #                break;
         #            default:
-        #                throw error('некорректное использование метода');
+        #                throw error("Некорректное использование метода");
         #        }
         #    }
         #}
       ENDSOURCE
       SOURCE #setSelectionPermission
-        #//look XlEnableSelection Enumeration for possible _enableSelection values
-        ##define.xlNoSelection(-4142)
         #void setSelectionPermission(int _worksheet = 0, int _enableSelection = #xlNoSelection)
         #{
         #    Com     doc, app, activeSheet, sheets;
@@ -534,14 +559,15 @@ Formatversion: 1
         #    {
         #        this.open();
         #    }
-        #
         #    doc = excelDocument.getComDocument();
+        #    //BP deviation documented
         #    app = doc.application();
+        #    //BP deviation documented
         #    sheets = app.sheets();
-        #
         #    if (!_worksheet)
         #    {
         #        shFrom = 1;
+        #        //BP deviation documented
         #        shCount = sheets.count();
         #    }
         #    else
@@ -549,10 +575,11 @@ Formatversion: 1
         #        shFrom = _worksheet;
         #        shCount = 1;
         #    }
-        #
         #    for (i = shFrom; i <= shCount; i++)
         #    {
+        #        //BP deviation documented
         #        activeSheet = sheets.Item(i);
+        #        //BP deviation documented
         #        activeSheet.enableSelection(_enableSelection);
         #    }
         #}
@@ -569,10 +596,11 @@ Formatversion: 1
         #}
       ENDSOURCE
       SOURCE #any2StrXml
-        ##define.XmlNullDate("1901-01-01T00:00:00.000")
-        ##define.XmlNullTime("T00:00:00.000")
         #public static str any2StrXml(anytype _data)
         #{
+        #    #define.XmlNullDate("1901-01-01T00:00:00.000")
+        #    #define.XmlNullTime("T00:00:00.000")
+        #
         #    str ret;
         #;
         #    switch (typeof(_data))
@@ -601,19 +629,20 @@ Formatversion: 1
         #            ret = enum2str(_data);
         #            break;
         #        default:
-        #            throw error('Неподдерживаемый тип данных.');
+        #            throw error("Неподдерживаемый тип данных.");
         #    }
         #    return ret;
         #}
       ENDSOURCE
       SOURCE #checkVBAObjectModelAccessEnabled
-        ##winapi
-        ##define.KeyName("AccessVBOM")
-        ##define.KeyPathExcel2007("Software\\Microsoft\\Office\\12.0\\Excel\\Security")
-        ##define.KeyPathExcel2003("Software\\Microsoft\\Office\\11.0\\Excel\\Security")
-        ##define.helpFileName('EnableVBAProjectAccess.htm')
         #public static boolean checkVBAObjectModelAccessEnabled(boolean _verbose = false, boolean _showHelp = false)
         #{
+        #    #WinApi
+        #    #define.KeyName("AccessVBOM")
+        #    #define.KeyPathExcel2007("Software\\Microsoft\\Office\\12.0\\Excel\\Security")
+        #    #define.KeyPathExcel2003("Software\\Microsoft\\Office\\11.0\\Excel\\Security")
+        #    #define.helpFileName("EnableVBAProjectAccess.htm")
+        #
         #    int res;
         #    container buf;
         #    int keyValue;
@@ -646,11 +675,11 @@ Formatversion: 1
         #    {
         #        if (_verbose)
         #        {
-        #            warning('Программный доступ к объектной модели VBA не разрешён.');
+        #            warning("Программный доступ к объектной модели VBA не разрешён.");
         #        }
         #        if (_verbose && _showHelp)
         #        {
-        #            info('Следуйте инструкции по настройке доступа, указанной в открывшемся окне браузера.');
+        #            info("Следуйте инструкции по настройке доступа, указанной в открывшемся окне браузера.");
         #            WinApi::shellExecute(templatefolder_w() + #helpFileName);
         #        }
         #    }
