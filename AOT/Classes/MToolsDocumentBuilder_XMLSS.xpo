@@ -82,6 +82,12 @@ Formatversion: 1
         #    return #XMLFileExtension;
         #}
       ENDSOURCE
+      SOURCE #defaultEncoding
+        #public CLRObject defaultEncoding()
+        #{
+        #    return new System.Text.UTF8Encoding(true);
+        #}
+      ENDSOURCE
       SOURCE #defaultExpandNameBlocksToRowElement
         #public int defaultExpandNameBlocksToRowElement()
         #{

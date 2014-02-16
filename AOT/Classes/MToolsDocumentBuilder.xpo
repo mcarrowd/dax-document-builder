@@ -78,6 +78,7 @@ Formatversion: 1
         #    int             blockNameMaxLength;
         #    str             documentFileExtension;
         #    System.IO.StreamWriter      streamWriter;
+        #    System.Text.Encoding        encoding;
         #
         #    #define.zeroBlockName('zero')
         #    #define.temporaryFolderName('DAXXMLSS')
@@ -103,6 +104,12 @@ Formatversion: 1
       SOURCE #defaultDocumentFileExtension
         #abstract public str defaultDocumentFileExtension()
         #{
+        #}
+      ENDSOURCE
+      SOURCE #defaultEncoding
+        #public System.Text.Encoding defaultEncoding()
+        #{
+        #    return System.Text.Encoding::get_Default();
         #}
       ENDSOURCE
       SOURCE #defaultMaxBufferSize
@@ -234,22 +241,19 @@ Formatversion: 1
         #
         #    InteropPermission permission;
         #    System.IO.FileStream fileStream;
-        #    System.Text.UTF8Encoding utf8Encoding;
         #    CLRObject fileMode, fileAccess, fileShare, clrException;
         #;
         #    permission = new InteropPermission(InteropKind::ClrInterop);
         #    permission.assert();
         #    try
         #    {
-        #        //BP deviation documented
-        #        utf8Encoding = new System.Text.UTF8Encoding(true);
         #        fileMode   = ClrInterop::parseClrEnum(#Enum_SystemIOFileMode_CreateNew);
         #        fileAccess = ClrInterop::parseClrEnum(#Enum_SystemIOFileAccess_Write);
         #        fileShare  = ClrInterop::parseClrEnum(#Enum_SystemIOFileShare_Read);
         #        //BP deviation documented
         #        fileStream = new ClrObject(#Class_SystemIOFileStream, target, fileMode, fileAccess, fileShare);
         #        //BP deviation documented
-        #        streamWriter = new System.IO.StreamWriter(fileStream, utf8Encoding);
+        #        streamWriter = new System.IO.StreamWriter(fileStream, encoding);
         #    }
         #    catch (Exception::Internal)
         #    {
@@ -358,6 +362,7 @@ Formatversion: 1
         #    blockNameMaxLength           = this.defaultBlockNameMaxLength();
         #    maxBufferSize                = this.defaultMaxBufferSize();
         #    documentFileExtension        = this.defaultDocumentFileExtension();
+        #    encoding                     = this.defaultEncoding();
         #
         #    buffer             = new TextBuffer();
         #    templateBlocks     = new Map(Types::Integer, Types::String);
@@ -408,6 +413,14 @@ Formatversion: 1
         #    if (_documentFileExtension != documentFileExtension) documentFileExtension = _documentFileExtension;
         #
         #    return documentFileExtension;
+        #}
+      ENDSOURCE
+      SOURCE #parmEncoding
+        #public System.Text.Encoding parmEncoding(System.Text.Encoding _encoding = encoding)
+        #{
+        #;
+        #    encoding = _encoding;
+        #    return encoding;
         #}
       ENDSOURCE
       SOURCE #parmMaxBufferSize
@@ -505,22 +518,19 @@ Formatversion: 1
         #    InteropPermission permission;
         #    System.IO.FileStream fileStream;
         #    System.IO.StreamReader streamReader;
-        #    System.Text.UTF8Encoding utf8Encoding;
         #    CLRObject fileMode, fileAccess, fileShare, clrException;
         #;
         #    permission = new InteropPermission(InteropKind::ClrInterop);
         #    permission.assert();
         #    try
         #    {
-        #        //BP deviation documented
-        #        utf8Encoding = new System.Text.UTF8Encoding();
         #        fileMode   = ClrInterop::parseClrEnum(#Enum_SystemIOFileMode_Open);
         #        fileAccess = ClrInterop::parseClrEnum(#Enum_SystemIOFileAccess_Read);
         #        fileShare  = ClrInterop::parseClrEnum(#Enum_SystemIOFileShare_ReadWrite);
         #        //BP deviation documented
         #        fileStream = new ClrObject(#Class_SystemIOFileStream, template, fileMode, fileAccess, fileShare);
         #        //BP deviation documented
-        #        streamReader = new System.IO.StreamReader(fileStream, utf8Encoding);
+        #        streamReader = new System.IO.StreamReader(fileStream, encoding);
         #        templateData = streamReader.ReadToEnd();
         #        streamReader.Close();
         #    }
