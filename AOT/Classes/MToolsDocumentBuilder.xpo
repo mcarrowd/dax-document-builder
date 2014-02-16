@@ -59,6 +59,7 @@ Formatversion: 1
         #    str             blockNameLeftQuote,
         #                    blockNameRightQuote;
         #    int             blockNameMaxLength;
+        #    str             documentFileExtension;
         #
         #    #define.zeroBlockName('zero')
         #    #define.temporaryFolderName('DAXXMLSS')
@@ -78,6 +79,11 @@ Formatversion: 1
       ENDSOURCE
       SOURCE #defaultBlockNameRightQuote
         #abstract public str defaultBlockNameRightQuote()
+        #{
+        #}
+      ENDSOURCE
+      SOURCE #defaultDocumentFileExtension
+        #abstract public str defaultDocumentFileExtension()
         #{
         #}
       ENDSOURCE
@@ -144,7 +150,7 @@ Formatversion: 1
         #;
         #    tmpFilePath = this.getTempPath();
         #    tmpFileName = guid2str(newguid());
-        #    return strfmt('%1%2%3', tmpFilePath, tmpFileName, #XMLFileExtension);
+        #    return strfmt('%1%2%3', tmpFilePath, tmpFileName, documentFileExtension);
         #}
       ENDSOURCE
       SOURCE #getTemplateBlocks
@@ -237,8 +243,8 @@ Formatversion: 1
         #        block = templateBlocks.lookup(_blockNum);
         #        for(i = 1; i <= len; i++)
         #        {
-        #            placeHolder = placeholderTypecast ? MToolsXMLExcelReport::any2StrXml(conpeek(_placeHolders, i)) : conpeek(_placeHolders, i);
-        #            data        = dataTypecast        ? MToolsXMLExcelReport::any2StrXml(conpeek(_data, i))         : conpeek(_data, i);
+        #            placeHolder = this.preparePlaceHolder(conpeek(_placeHolders, i));
+        #            data        = this.prepareDataItem(conpeek(_data, i));
         #            block       = strReplace(block, placeHolder, data);
         #        }
         #        this.bufferAppend(block);
@@ -285,9 +291,9 @@ Formatversion: 1
         #    str fileExtention;
         #;
         #    fileExtention = conpeek(filenamesplit(target), 3);
-        #    if (strupr(fileExtention) != strupr(#XMLFileExtension))
+        #    if (strupr(fileExtention) != strupr(documentFileExtension))
         #    {
-        #        return checkfailed(strfmt('Расширение файла документа "%1" не соответствует требуемому ("%2")', fileExtention, #XMLFileExtension));
+        #        return checkfailed(strfmt('Расширение файла документа "%1" не соответствует требуемому ("%2")', fileExtention, documentFileExtension));
         #    }
         #    if (WinApi::fileExists(target))
         #    {
@@ -319,6 +325,7 @@ Formatversion: 1
         #    blockNameRightQuote          = this.defaultBlockNameRightQuote();
         #    blockNameMaxLength           = this.defaultBlockNameMaxLength();
         #    maxBufferSize                = this.defaultMaxBufferSize();
+        #    documentFileExtension        = this.defaultDocumentFileExtension();
         #
         #    buffer             = new TextBuffer();
         #    templateBlocks     = new Map(Types::Integer, Types::String);
@@ -363,6 +370,14 @@ Formatversion: 1
         #    return blockNameRightQuote;
         #}
       ENDSOURCE
+      SOURCE #parmDocumentFileExtension
+        #public str parmDocumentFileExtension(str _documentFileExtension = documentFileExtension)
+        #{
+        #    if (_documentFileExtension != documentFileExtension) documentFileExtension = _documentFileExtension;
+        #
+        #    return documentFileExtension;
+        #}
+      ENDSOURCE
       SOURCE #parmMaxBufferSize
         #public int parmMaxBufferSize(int _maxBufferSize = maxBufferSize)
         #{
@@ -393,32 +408,22 @@ Formatversion: 1
         #    isDocumentPrepared = true;
         #}
       ENDSOURCE
+      SOURCE #prepareDataItem
+        #protected str prepareDataItem(anytype _dataItem)
+        #{
+        #    return _dataItem;
+        #}
+      ENDSOURCE
+      SOURCE #preparePlaceHolder
+        #protected str preparePlaceHolder(anytype _placeHolder)
+        #{
+        #    return _placeHolder;
+        #}
+      ENDSOURCE
       SOURCE #prepareTemplate
-        ##define.ExpandedRowCountPattern('ss\\:ExpandedRowCount=":d+"')
-        ##define.RowIndexPattern('\\<Row ss\\:Index=":d+"')
         #protected void prepareTemplate()
         #{
-        #    TextBuffer textBuffer = new TextBuffer();
-        #    int scanPos;
         #;
-        #    if (!templateData)
-        #    {
-        #        return;
-        #    }
-        #    textBuffer.setText(templateData);
-        #    scanPos = 1;
-        #    while (textBuffer.find(#ExpandedRowCountPattern, scanPos))
-        #    {
-        #        scanPos = textBuffer.matchPos();
-        #        textBuffer.delete(textBuffer.matchPos(), textBuffer.matchLen());
-        #    }
-        #    scanPos = 1;
-        #    while (textBuffer.find(#RowIndexPattern, scanPos))
-        #    {
-        #        scanPos = textBuffer.matchPos();
-        #        textBuffer.delete(textBuffer.matchPos() + 4, textBuffer.matchLen() - 4);
-        #    }
-        #    templateData = textBuffer.getText();
         #}
       ENDSOURCE
       SOURCE #readTemplate
@@ -429,10 +434,6 @@ Formatversion: 1
         #    this.readTemplateFile();
         #    this.prepareTemplate();
         #    nameBlocks = this.findNameBlocks();
-        #    if (expandNameBlocksToRowElement)
-        #    {
-        #        nameBlocks = this.expandBlocksToElement(nameBlocks, #rowElementStartTag, #rowElementEndTag);
-        #    }
         #    tmplBlocks = this.getTemplateBlocks(nameBlocks);
         #    this.readTemplateBlocks(tmplBlocks);
         #
@@ -506,8 +507,8 @@ Formatversion: 1
         #{
         #}
       ENDSOURCE
-      SOURCE #saveXml
-        #public void saveXml()
+      SOURCE #saveDocumentFile
+        #public void saveDocumentFile()
         #{
         #;
         #    if (isDocumentEmpty)
@@ -545,8 +546,8 @@ Formatversion: 1
         #        int64       difference;
         #        int         res;
         #    ;
-        #        [createDate, createTime] = MToolsXMLExcelReport::getFileTimeLocal(_file);
-        #        difference = MToolsXMLExcelReport::getDateTimeDifference(createDate, createTime, today(), timenow());
+        #        [createDate, createTime] = MToolsDocumentBuilder::getFileTimeLocal(_file);
+        #        difference = MToolsDocumentBuilder::getDateTimeDifference(createDate, createTime, today(), timenow());
         #        if (difference >= #temporaryFileLifetime)
         #        {
         #            res = WinApi::deleteFile(_file);

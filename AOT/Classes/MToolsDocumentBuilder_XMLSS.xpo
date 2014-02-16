@@ -68,6 +68,12 @@ Formatversion: 1
         #    return true;
         #}
       ENDSOURCE
+      SOURCE #defaultDocumentFileExtension
+        #public str defaultDocumentFileExtension()
+        #{
+        #    return #XMLFileExtension;
+        #}
+      ENDSOURCE
       SOURCE #defaultExpandNameBlocksToRowElement
         #public int defaultExpandNameBlocksToRowElement()
         #{
@@ -159,6 +165,19 @@ Formatversion: 1
         #    return ret;
         #}
       ENDSOURCE
+      SOURCE #findNameBlocks
+        #protected container findNameBlocks()
+        #{
+        #    container ret;
+        #;
+        #    ret = super();
+        #    if (expandNameBlocksToRowElement)
+        #    {
+        #        ret = this.expandBlocksToElement(ret, #rowElementStartTag, #rowElementEndTag);
+        #    }
+        #    return ret;
+        #}
+      ENDSOURCE
       SOURCE #getComExcelDocument
         #public ComExcelDocument_RU getComExcelDocument()
         #{
@@ -167,7 +186,7 @@ Formatversion: 1
         #}
       ENDSOURCE
       SOURCE #new
-        #void new(Filename _template, Filename _target)
+        #void new(FileName _template, FileName _target = '')
         #{
         #;
         #    expandNameBlocksToRowElement = this.defaultExpandNameBlocksToRowElement();
@@ -185,7 +204,7 @@ Formatversion: 1
         #;
         #    if (!isDocumentSaved)
         #    {
-        #        this.saveXml();
+        #        this.saveDocumentFile();
         #    }
         #    if (excelDocument.open(target, false))
         #    {
@@ -219,6 +238,57 @@ Formatversion: 1
         #    if (_placeholderTypecast != placeholderTypecast) placeholderTypecast = _placeholderTypecast;
         #
         #    return placeholderTypecast;
+        #}
+      ENDSOURCE
+      SOURCE #prepareDataItem
+        #protected str prepareDataItem(anytype _dataItem)
+        #{
+        #;
+        #    if (dataTypecast)
+        #    {
+        #        return MToolsDocumentBuilder_XMLSS::any2StrXml(_dataItem);
+        #    }
+        #    return _dataItem;
+        #}
+      ENDSOURCE
+      SOURCE #preparePlaceHolder
+        #protected str preparePlaceHolder(anytype _placeHolder)
+        #{
+        #;
+        #    if (placeholderTypecast)
+        #    {
+        #        return MToolsDocumentBuilder_XMLSS::any2StrXml(_placeHolder);
+        #    }
+        #    return _placeHolder;
+        #}
+      ENDSOURCE
+      SOURCE #prepareTemplate
+        #protected void prepareTemplate()
+        #{
+        #    #define.ExpandedRowCountPattern('ss\\:ExpandedRowCount=":d+"')
+        #    #define.RowIndexPattern('\\<Row ss\\:Index=":d+"')
+        #
+        #    TextBuffer textBuffer = new TextBuffer();
+        #    int scanPos;
+        #;
+        #    if (!templateData)
+        #    {
+        #        return;
+        #    }
+        #    textBuffer.setText(templateData);
+        #    scanPos = 1;
+        #    while (textBuffer.find(#ExpandedRowCountPattern, scanPos))
+        #    {
+        #        scanPos = textBuffer.matchPos();
+        #        textBuffer.delete(textBuffer.matchPos(), textBuffer.matchLen());
+        #    }
+        #    scanPos = 1;
+        #    while (textBuffer.find(#RowIndexPattern, scanPos))
+        #    {
+        #        scanPos = textBuffer.matchPos();
+        #        textBuffer.delete(textBuffer.matchPos() + 4, textBuffer.matchLen() - 4);
+        #    }
+        #    templateData = textBuffer.getText();
         #}
       ENDSOURCE
       SOURCE #protectWorkbook
