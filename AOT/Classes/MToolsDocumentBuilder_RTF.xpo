@@ -1,0 +1,69 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: CLS
+
+; Microsoft Dynamics Class: MToolsDocumentBuilder_RTF выгружен
+; --------------------------------------------------------------------------------
+  CLSVERSION 1
+  
+  CLASS #MToolsDocumentBuilder_RTF
+    Id 52043
+    PROPERTIES
+      Name                #MToolsDocumentBuilder_RTF
+      Extends             #MToolsDocumentBuilder
+      RunOn               #Called from
+    ENDPROPERTIES
+    
+    METHODS
+      Version: 3
+      SOURCE #classDeclaration
+        #class MToolsDocumentBuilder_RTF extends MToolsDocumentBuilder
+        #{
+        #    #define.RTFFileExtension('.rtf')
+        #}
+      ENDSOURCE
+      SOURCE #defaultBlockNameLeftQuote
+        #public str defaultBlockNameLeftQuote()
+        #{
+        #    return '#!';
+        #}
+      ENDSOURCE
+      SOURCE #defaultBlockNameRightQuote
+        #public str defaultBlockNameRightQuote()
+        #{
+        #    return '!#';
+        #}
+      ENDSOURCE
+      SOURCE #defaultDocumentFileExtension
+        #public str defaultDocumentFileExtension()
+        #{
+        #    return #RTFFileExtension;
+        #}
+      ENDSOURCE
+      SOURCE #open
+        #void open()
+        #{
+        #;
+        #    WinApi::shellExecute('winword.exe', target);
+        #    //WinApi::shellExecute('notepad.exe', target);
+        #}
+      ENDSOURCE
+      SOURCE #save
+        #void save()
+        #{
+        #;
+        #    this.saveDocumentFile();
+        #}
+      ENDSOURCE
+      SOURCE #show
+        #void show()
+        #{
+        #;
+        #    this.open();
+        #}
+      ENDSOURCE
+    ENDMETHODS
+  ENDCLASS
+
+***Element: END
