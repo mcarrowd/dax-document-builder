@@ -1,0 +1,1152 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: CLS
+
+; Microsoft Dynamics Class: MToolsXMLExcelReport выгружен
+; --------------------------------------------------------------------------------
+  CLSVERSION 1
+  
+  CLASS #MToolsXMLExcelReport
+    Id 51796
+    PROPERTIES
+      Name                #MToolsXMLExcelReport
+      Extends             #
+      RunOn               #Called from
+    ENDPROPERTIES
+    
+    METHODS
+      Version: 3
+      SOURCE #autoFitRows
+        #public void autoFitRows()
+        #{
+        #    COM sheet, cells, range;
+        #    int i;
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
+        #    {
+        #        sheet = excelDocument.getWorkSheet(i);
+        #        cells = sheet.cells();
+        #        range = cells.entirerow();
+        #        range.autofit();
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #bufferAppend
+        #protected void bufferAppend(str _string)
+        #{
+        #;
+        #    buffer.appendText(_string);
+        #    if (maxBufferSize && buffer.size() > maxBufferSize)
+        #    {
+        #        this.flushBuffer();
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #checkDocument
+        #protected boolean checkDocument()
+        #{
+        #    if (!WinAPI::fileExists(template))
+        #    {
+        #        return checkFailed(strfmt("@SYS60367", template));
+        #    }
+        #    return true;
+        #}
+      ENDSOURCE
+      SOURCE #classDeclaration
+        #/*
+        #    Движок для формирования документов Excel в формате XMLSS (Таблица XML 2003)
+        #*/
+        #class MToolsXMLExcelReport
+        #{
+        #    FileName        template,
+        #                    target;
+        #    str             templateData;
+        #    Map             templateBlocks,
+        #                    templateBlockNames;
+        #    int             lastBlock;
+        #    TextBuffer      buffer;
+        #    TextIo          textIo;
+        #    int             maxBufferSize;
+        #    boolean         isDocumentTemporary,
+        #                    isDocumentPrepared,
+        #                    isDocumentEmpty,
+        #                    isDocumentReady,
+        #                    isDocumentSaved,
+        #                    isDocumentOpen;
+        #    str             blockNameLeftQuote,
+        #                    blockNameRightQuote;
+        #    int             blockNameMaxLength;
+        #    boolean         expandNameBlocksToRowElement,
+        #                    placeholderTypecast,
+        #                    dataTypecast;
+        #
+        #    ComExcelDocument_RU excelDocument;
+        #
+        #    #define.zeroBlockName('zero')
+        #    #define.rowElementStartTag('<Row')
+        #    #define.rowElementEndTag('</Row>')
+        #    #define.temporaryFolderName('DAXXMLSS')
+        #    #define.XMLFileExtension('.xml')
+        #    #define.temporaryFileLifeTime(28800)
+        #}
+      ENDSOURCE
+      SOURCE #defaultBlockNameLeftQuote
+        #public str defaultBlockNameLeftQuote()
+        #{
+        #    return "<!--";
+        #}
+      ENDSOURCE
+      SOURCE #defaultBlockNameMaxLength
+        #public int defaultBlockNameMaxLength()
+        #{
+        #    return 20;
+        #}
+      ENDSOURCE
+      SOURCE #defaultBlockNameRightQuote
+        #public str defaultBlockNameRightQuote()
+        #{
+        #    return "-->";
+        #}
+      ENDSOURCE
+      SOURCE #defaultDataTypecast
+        #public boolean defaultDataTypecast()
+        #{
+        #    return true;
+        #}
+      ENDSOURCE
+      SOURCE #defaultExpandNameBlocksToRowElement
+        #public int defaultExpandNameBlocksToRowElement()
+        #{
+        #    return false;
+        #}
+      ENDSOURCE
+      SOURCE #defaultMaxBufferSize
+        #public int defaultMaxBufferSize()
+        #{
+        #    return 0;
+        #}
+      ENDSOURCE
+      SOURCE #defaultPlaceholderTypecast
+        #public boolean defaultPlaceholderTypecast()
+        #{
+        #    return true;
+        #}
+      ENDSOURCE
+      SOURCE #displayFullScreen
+        ##define.xlNormal(-4143)
+        #public void displayFullScreen(boolean _display)
+        #{
+        #    Com doc, app;
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    doc = excelDocument.getComDocument();
+        #    app = doc.application();
+        #    if (_display)
+        #    {
+        #        app.displayfullscreen(true);
+        #    }
+        #    else
+        #    {
+        #        app.windowState(#xlNormal);
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #displayGridLines
+        #public void displayGridLines(boolean _display)
+        #{
+        #    Com     doc, app, activeWindow;
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    doc = excelDocument.getComDocument();
+        #    app = doc.application();
+        #    activeWindow = app.activeWindow();
+        #    activeWindow.displayGridLines(_display);
+        #}
+      ENDSOURCE
+      SOURCE #expandBlocksToElement
+        #protected container expandBlocksToElement(container _blocks, str _startTag, str _endTag)
+        #{
+        #    container ret;
+        #    int i;
+        #    int blockStart, blockEnd, elementStart, elementEnd;
+        #    str blockName;
+        #    int scanPos;
+        #    int len = strlen(templateData);
+        #;
+        #
+        #    for (i = 1; i <= conlen(_blocks); i ++)
+        #    {
+        #        elementStart = 0;
+        #        elementEnd   = 0;
+        #        [blockStart, blockEnd, blockName] = conpeek(_blocks, i);
+        #
+        #        scanPos = strscan(templateData, _startTag, blockStart - 1, - (blockStart - 1));
+        #        if (!strscan(templateData, _endTag, blockStart - 1, - (blockStart - scanPos - strlen(_startTag))))
+        #        {
+        #            elementStart = scanPos;
+        #        }
+        #
+        #        scanPos = strscan(templateData, _endTag, blockEnd + 1, len - blockEnd - 1);
+        #        if (!strscan(templateData, _startTag, blockEnd + 1,  scanPos - blockEnd - 1))
+        #        {
+        #            elementEnd = scanPos + strlen(_endTag) - 1;
+        #        }
+        #
+        #        if (elementStart && elementEnd)
+        #        {
+        #            ret += [[elementStart, elementEnd, blockName]];
+        #        }
+        #        else
+        #        {
+        #            ret += [[blockStart, blockEnd, blockName]];
+        #        }
+        #    }
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #findNameBlocks
+        #protected container findNameBlocks()
+        #{
+        #    container ret;
+        #    int scanPos;
+        #    int len = strlen(templateData), blockNameLen, leftQuoteStart, leftQuoteEnd, rightQuoteStart, rightQuoteEnd;
+        #    str blockName;
+        #;
+        #
+        #    do
+        #    {
+        #        scanPos ++;
+        #        scanPos = strScan(templateData, blockNameLeftQuote, scanPos, len - scanPos);
+        #        if (scanPos)
+        #        {
+        #            leftQuoteStart = scanPos;
+        #            leftQuoteEnd = leftQuoteStart + strlen(blockNameLeftQuote) - 1;
+        #            scanPos = strScan(templateData, blockNameRightQuote, leftQuoteEnd + 1, len - leftQuoteEnd);
+        #            if (scanPos)
+        #            {
+        #                rightQuoteStart = scanPos;
+        #                rightQuoteEnd = rightQuoteStart + strlen(blockNameRightQuote) - 1;
+        #                if (leftQuoteStart && leftQuoteEnd && rightQuoteStart && rightQuoteEnd)
+        #                {
+        #                    blockNameLen = rightQuoteStart - leftQuoteEnd - 1;
+        #                    if (blockNameLen <= blockNameMaxLength)
+        #                    {
+        #                        blockName = substr(templateData, leftQuoteEnd + 1, blockNameLen);
+        #                        ret += [[leftQuoteStart, rightQuoteEnd, blockName]];
+        #                    }
+        #                }
+        #            }
+        #        }
+        #    }
+        #    while (scanPos);
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #flushBuffer
+        #protected void flushBuffer()
+        #{
+        #;
+        #    if (textIo && buffer)
+        #    {
+        #        textIo.writeRaw(buffer.getText());
+        #        buffer.setText('');
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #getComExcelDocument
+        #public ComExcelDocument_RU getComExcelDocument()
+        #{
+        #;
+        #    return excelDocument;
+        #}
+      ENDSOURCE
+      SOURCE #getTempFile
+        #protected str getTempFile()
+        #{
+        #    str tmpFileName, tmpFilePath;
+        #;
+        #    tmpFilePath = this.getTempPath();
+        #    tmpFileName = guid2str(newguid());
+        #    return strfmt('%1%2%3', tmpFilePath, tmpFileName, #XMLFileExtension);
+        #}
+      ENDSOURCE
+      SOURCE #getTemplateBlocks
+        #protected container getTemplateBlocks(container _nameBlocks)
+        #{
+        #    container ret;
+        #    int i;
+        #    int curBlockStart, curBlockEnd, nextBlockStart;
+        #    str curBlockName, nextBlockName;
+        #    int len = strlen(templateData);
+        #
+        #    void addRet()
+        #    {
+        #        if (curBlockStart < curBlockEnd)
+        #        {
+        #            ret += [[curBlockStart, curBlockEnd, curBlockName]];
+        #        }
+        #    }
+        #;
+        #
+        #    nextBlockStart = 1;
+        #    nextBlockName = #zeroBlockName;
+        #    for (i = 1; i <= conlen(_nameBlocks); i ++)
+        #    {
+        #        curBlockStart = nextBlockStart;
+        #        curBlockName = nextBlockName;
+        #        [curBlockEnd, nextBlockStart, nextBlockName] = conpeek(_nameBlocks, i);
+        #        curBlockEnd --;
+        #        nextBlockStart ++;
+        #        addRet();
+        #    }
+        #    curBlockStart = nextBlockStart;
+        #    curBlockName = nextBlockName;
+        #    curBlockEnd = len;
+        #    addRet();
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #getTempPath
+        #protected str getTempPath()
+        #{
+        #    str tempDir;
+        #    boolean res;
+        #;
+        #    tempDir = strfmt('%1%2\\', WinApi::getTempPath(), #temporaryFolderName);
+        #    if (!WinApi::folderExists(tempDir))
+        #    {
+        #        res = WinApi::createDirectoryPath(tempDir);
+        #    }
+        #    else
+        #    {
+        #        res = true;
+        #    }
+        #    if (!res)
+        #    {
+        #        throw error(strfmt('Каталог "%1" не существует', tempDir));
+        #    }
+        #    return tempDir;
+        #}
+      ENDSOURCE
+      SOURCE #insertBlock
+        #public void insertBlock(int _blockNum, container _placeHolders = connull(), container _data = connull())
+        #{
+        #    int placeHoldersLen = conlen(_placeHolders),
+        #        dataLen = conlen(_data),
+        #        len = placeHoldersLen < dataLen ? placeHoldersLen : dataLen,
+        #        i;
+        #    str block, placeHolder, data;
+        #;
+        #    if (!isDocumentPrepared)
+        #    {
+        #        this.prepare();
+        #    }
+        #    if (templateBlocks.exists(_blockNum))
+        #    {
+        #        if (_blockNum == 0 && !isDocumentEmpty)
+        #        {
+        #            throw error('Попытка вывода нулевого блока несколько раз.');
+        #        }
+        #        if (_blockNum > 0 && isDocumentEmpty)
+        #        {
+        #            this.bufferAppend(templateBlocks.lookup(0));
+        #            isDocumentEmpty = false;
+        #        }
+        #        if(_blockNum == lastBlock && isDocumentReady)
+        #        {
+        #            throw error('Попытка вывода после завершения построения документа.');
+        #        }
+        #        block = templateBlocks.lookup(_blockNum);
+        #        for(i = 1; i <= len; i++)
+        #        {
+        #            placeHolder = placeholderTypecast ? MToolsXMLExcelReport::any2StrXml(conpeek(_placeHolders, i)) : conpeek(_placeHolders, i);
+        #            data        = dataTypecast        ? MToolsXMLExcelReport::any2StrXml(conpeek(_data, i))         : conpeek(_data, i);
+        #            block       = strReplace(block, placeHolder, data);
+        #        }
+        #        this.bufferAppend(block);
+        #        isDocumentEmpty = false;
+        #        if(_blockNum == lastBlock)
+        #        {
+        #            isDocumentReady = true;
+        #        }
+        #    }
+        #    else
+        #    {
+        #        throw error('Заданного блока не существует');
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #insertBlockByName
+        #public void insertBlockByName(str _blockName, container _placeHolders = connull(), container _data = connull())
+        #{
+        #    int blockNum;
+        #;
+        #    if (!isDocumentPrepared)
+        #    {
+        #        this.prepare();
+        #    }
+        #    if (!templateBlockNames.exists(_blockName))
+        #    {
+        #        throw error(strfmt("Блок '%1' не найден в шаблоне документа", _blockName));
+        #    }
+        #    blockNum = templateBlockNames.lookup(_blockName);
+        #    this.insertBlock(blockNum, _placeHolders, _data);
+        #}
+      ENDSOURCE
+      SOURCE #lastBlock
+        #public int lastBlock()
+        #{
+        #    return lastBlock;
+        #}
+      ENDSOURCE
+      SOURCE #makeDocument
+        ##File
+        #protected boolean makeDocument()
+        #{
+        #    FileIoPermission ioPermission;
+        #    str fileExtention;
+        #;
+        #    fileExtention = conpeek(filenamesplit(target), 3);
+        #    if (strupr(fileExtention) != strupr(#XMLFileExtension))
+        #    {
+        #        return checkfailed(strfmt('Расширение файла документа "%1" не соответствует требуемому ("%2")', fileExtention, #XMLFileExtension));
+        #    }
+        #    if (WinApi::fileExists(target))
+        #    {
+        #        return checkfailed(strfmt('Файл %1 уже существует', target));
+        #    }
+        #    ioPermission = new FileIoPermission(target, #io_write);
+        #    ioPermission.assert();
+        #    textIo = new TextIo(target, #io_write, 65001); //UTF-8
+        #    CodeAccessPermission::revertAssert();
+        #    if (!textIo)
+        #    {
+        #        return checkfailed(strfmt('Невозможно открыть файл %1 для записи', target));
+        #    }
+        #    return true;
+        #}
+      ENDSOURCE
+      SOURCE #new
+        #void new(FileName _template, FileName _target = '')
+        #{
+        #;
+        #    isDocumentTemporary = false;
+        #    isDocumentPrepared  = false;
+        #    isDocumentEmpty     = true;
+        #    isDocumentReady     = false;
+        #    isDocumentSaved     = false;
+        #    isDocumentOpen      = false;
+        #
+        #    blockNameLeftQuote           = this.defaultBlockNameLeftQuote();
+        #    blockNameRightQuote          = this.defaultBlockNameRightQuote();
+        #    blockNameMaxLength           = this.defaultBlockNameMaxLength();
+        #    expandNameBlocksToRowElement = this.defaultExpandNameBlocksToRowElement();
+        #    placeholderTypecast          = this.defaultPlaceholderTypecast();
+        #    dataTypecast                 = this.defaultDataTypecast();
+        #    maxBufferSize                = this.defaultMaxBufferSize();
+        #
+        #    buffer             = new TextBuffer();
+        #    templateBlocks     = new Map(Types::Integer, Types::String);
+        #    templateBlockNames = new Map(Types::String, Types::Integer);
+        #    excelDocument      = new ComExcelDocument_RU();
+        #
+        #    template = _template;
+        #    target   = _target;
+        #
+        #    if (!target)
+        #    {
+        #        isDocumentTemporary = true;
+        #        target = this.getTempFile();
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #open
+        #public void open()
+        #{
+        #;
+        #    if (!isDocumentSaved)
+        #    {
+        #        this.saveXml();
+        #    }
+        #    if (excelDocument.open(target, false))
+        #    {
+        #        isDocumentOpen = true;
+        #    }
+        #    else
+        #    {
+        #        throw warning("Возникла одна или несколько ошибок при открытии документа в Excel.");
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #parmBlockNameLeftQuote
+        #public str parmBlockNameLeftQuote(str _blockNameLeftQuote = blockNameLeftQuote)
+        #{
+        #    if (_blockNameLeftQuote != blockNameLeftQuote) blockNameLeftQuote = _blockNameLeftQuote;
+        #
+        #    return blockNameLeftQuote;
+        #}
+      ENDSOURCE
+      SOURCE #parmBlockNameMaxLength
+        #public int parmBlockNameMaxLength(int _blockNameMaxLength = blockNameMaxLength)
+        #{
+        #    if (_blockNameMaxLength != blockNameMaxLength) blockNameMaxLength = _blockNameMaxLength;
+        #
+        #    return blockNameMaxLength;
+        #}
+      ENDSOURCE
+      SOURCE #parmBlockNameRightQuote
+        #public str parmBlockNameRightQuote(str _blockNameRightQuote = blockNameRightQuote)
+        #{
+        #    if (_blockNameRightQuote != blockNameRightQuote) blockNameRightQuote = _blockNameRightQuote;
+        #
+        #    return blockNameRightQuote;
+        #}
+      ENDSOURCE
+      SOURCE #parmDataTypecast
+        #public boolean parmDataTypecast(boolean _dataTypecast = dataTypecast)
+        #{
+        #    if (_dataTypecast != dataTypecast) dataTypecast = _dataTypecast;
+        #
+        #    return dataTypecast;
+        #}
+      ENDSOURCE
+      SOURCE #parmExpandNameBlocksToRowElement
+        #public boolean parmExpandNameBlocksToRowElement(boolean _expandNameBlocksToRowElement = expandNameBlocksToRowElement)
+        #{
+        #    if (_expandNameBlocksToRowElement != expandNameBlocksToRowElement) expandNameBlocksToRowElement = _expandNameBlocksToRowElement;
+        #
+        #    return expandNameBlocksToRowElement;
+        #}
+      ENDSOURCE
+      SOURCE #parmMaxBufferSize
+        #public int parmMaxBufferSize(int _maxBufferSize = maxBufferSize)
+        #{
+        #    if (_maxBufferSize != maxBufferSize) maxBufferSize = _maxBufferSize;
+        #
+        #    return maxBufferSize;
+        #}
+      ENDSOURCE
+      SOURCE #parmPlaceholderTypecast
+        #public boolean parmPlaceholderTypecast(boolean _placeholderTypecast = placeholderTypecast)
+        #{
+        #    if (_placeholderTypecast != placeholderTypecast) placeholderTypecast = _placeholderTypecast;
+        #
+        #    return placeholderTypecast;
+        #}
+      ENDSOURCE
+      SOURCE #prepare
+        #public void prepare()
+        #{
+        #    if (!this.checkDocument())
+        #    {
+        #        throw warning('Невозможно загрузить шаблон документа');
+        #    }
+        #    if (isDocumentTemporary)
+        #    {
+        #        this.tempCleanup();
+        #    }
+        #    if (!this.makeDocument())
+        #    {
+        #        throw warning('Невозможно создать файл документа');
+        #    }
+        #    if (!this.readTemplate())
+        #    {
+        #        throw warning('Невозможно разобрать шаблон документа');
+        #    }
+        #    isDocumentPrepared = true;
+        #}
+      ENDSOURCE
+      SOURCE #prepareTemplate
+        ##define.ExpandedRowCountPattern('ss\\:ExpandedRowCount=":d+"')
+        ##define.RowIndexPattern('\\<Row ss\\:Index=":d+"')
+        #protected void prepareTemplate()
+        #{
+        #    TextBuffer textBuffer = new TextBuffer();
+        #    int scanPos;
+        #;
+        #    if (!templateData)
+        #    {
+        #        return;
+        #    }
+        #    textBuffer.setText(templateData);
+        #    scanPos = 1;
+        #    while (textBuffer.find(#ExpandedRowCountPattern, scanPos))
+        #    {
+        #        scanPos = textBuffer.matchPos();
+        #        textBuffer.delete(textBuffer.matchPos(), textBuffer.matchLen());
+        #    }
+        #    scanPos = 1;
+        #    while (textBuffer.find(#RowIndexPattern, scanPos))
+        #    {
+        #        scanPos = textBuffer.matchPos();
+        #        textBuffer.delete(textBuffer.matchPos() + 4, textBuffer.matchLen() - 4);
+        #    }
+        #    templateData = textBuffer.getText();
+        #}
+      ENDSOURCE
+      SOURCE #protectWorkbook
+        #void protectWorkbook(int _worksheet = 0, boolean _randomPassword = true, str _password = '',
+        #                     boolean _drawingObjects = true,           boolean _contents = true,
+        #                     boolean _scenarios = true,                boolean _userInterfaceOnly = true,
+        #                     boolean _allowFormattingCells = true,     boolean _allowFormattingColumns = true,
+        #                     boolean _allowFormattingRows = true,      boolean _allowInsertingColumns = true,
+        #                     boolean _allowInsertingRows = true,       boolean _allowInsertingHyperlinks = true,
+        #                     boolean _allowDeletingColumns = true,     boolean _allowDeletingRows = true,
+        #                     boolean _allowSorting = true,             boolean _allowFiltering = true,
+        #                     boolean _allowUsingPivotTables = true)
+        #{
+        #    Com     doc, app, activeSheet, sheets;
+        #    int     i, shFrom, shCount;
+        #    str     password = _password;
+        #;
+        #
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #
+        #    doc = excelDocument.getComDocument();
+        #    app = doc.application();
+        #    sheets = app.sheets();
+        #
+        #    if (!_worksheet)
+        #    {
+        #        shFrom = 1;
+        #        shCount = sheets.count();
+        #    }
+        #    else
+        #    {
+        #        shFrom = _worksheet;
+        #        shCount = 1;
+        #    }
+        #
+        #    if (_randomPassword)
+        #    {
+        #        password = guid2str(newguid());
+        #    }
+        #
+        #    for (i = shFrom; i <= shCount; i++)
+        #    {
+        #        activeSheet = sheets.Item(i);
+        #        activeSheet.protect(
+        #            password,
+        #            _drawingObjects,
+        #            _contents,
+        #            _scenarios,
+        #            _userInterfaceOnly,
+        #            _allowFormattingCells,
+        #            _allowFormattingColumns,
+        #            _allowFormattingRows,
+        #            _allowInsertingColumns,
+        #            _allowInsertingRows,
+        #            _allowInsertingHyperlinks,
+        #            _allowDeletingColumns,
+        #            _allowDeletingRows,
+        #            _allowSorting,
+        #            _allowFiltering,
+        #            _allowUsingPivotTables
+        #            );
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #readTemplate
+        #protected boolean readTemplate()
+        #{
+        #    container nameBlocks, tmplBlocks;
+        #;
+        #    this.readTemplateFile();
+        #    this.prepareTemplate();
+        #    nameBlocks = this.findNameBlocks();
+        #    if (expandNameBlocksToRowElement)
+        #    {
+        #        nameBlocks = this.expandBlocksToElement(nameBlocks, #rowElementStartTag, #rowElementEndTag);
+        #    }
+        #    tmplBlocks = this.getTemplateBlocks(nameBlocks);
+        #    this.readTemplateBlocks(tmplBlocks);
+        #
+        #    if (templateBlocks.elements() <= 2)
+        #    {
+        #        return checkfailed('В шаблоне документа должно быть более двух блоков');
+        #    }
+        #    return true;
+        #}
+      ENDSOURCE
+      SOURCE #readTemplateBlocks
+        #protected void readTemplateBlocks(container _templateBlocks)
+        #{
+        #    int i;
+        #    int blockStart, blockEnd;
+        #    str blockName;
+        #;
+        #    lastBlock = -1;
+        #    for (i = 1; i <= conlen(_templateBlocks); i ++)
+        #    {
+        #        lastBlock ++;
+        #        [blockStart, blockEnd, blockName] = conpeek(_templateBlocks, i);
+        #        templateBlocks.insert(i - 1, subStr(templateData, blockStart, blockEnd - blockStart + 1));
+        #        templateBlockNames.insert(blockName, lastBlock);
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #readTemplateFile
+        ##CLRInterop
+        #protected void readTemplateFile()
+        #{
+        #    InteropPermission permission;
+        #    System.IO.FileStream fileStream;
+        #    System.IO.StreamReader streamReader;
+        #    System.Text.UTF8Encoding utf8Encoding;
+        #    CLRObject fileMode, fileAccess, fileShare, clrException;
+        #;
+        #    permission = new InteropPermission(InteropKind::ClrInterop);
+        #    permission.assert();
+        #    try
+        #    {
+        #        //BP deviation documented
+        #        utf8Encoding = new System.Text.UTF8Encoding();
+        #        fileMode   = ClrInterop::parseClrEnum(#Enum_SystemIOFileMode_Open);
+        #        fileAccess = ClrInterop::parseClrEnum(#Enum_SystemIOFileAccess_Read);
+        #        fileShare  = ClrInterop::parseClrEnum(#Enum_SystemIOFileShare_ReadWrite);
+        #        //BP deviation documented
+        #        fileStream = new ClrObject(#Class_SystemIOFileStream, template, fileMode, fileAccess, fileShare);
+        #        //BP deviation documented
+        #        streamReader = new System.IO.StreamReader(fileStream, utf8Encoding);
+        #        templateData = streamReader.ReadToEnd();
+        #        streamReader.Close();
+        #    }
+        #    catch (Exception::Internal)
+        #    {
+        #        //BP deviation documented
+        #        clrException = CLRInterop::getLastException();
+        #        throw error(getCLRExceprionText(clrException));
+        #    }
+        #    catch (Exception::CLRError)
+        #    {
+        #        //BP deviation documented
+        #        clrException = CLRInterop::getLastException();
+        #        throw error(getCLRExceprionText(clrException));
+        #    }
+        #    CodeAccessPermission::revertAssert();
+        #}
+      ENDSOURCE
+      SOURCE #save
+        #public void save()
+        #{
+        #    Com doc;
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    doc = excelDocument.getComDocument();
+        #    doc.save();
+        #    isDocumentSaved = true;
+        #}
+      ENDSOURCE
+      SOURCE #saveAs
+        ##Excel
+        #public void saveAs(boolean _removeOriginal = true, FileName _fileName = '', int _fileFormat = #xlWorkbookNormal,
+        #                   str _password = '', str _writeResPassword = '', boolean _readOnlyRecommended = false,
+        #                   boolean _createBackup = false, int _accessMode = #xlNoChange, int _conflictResolution = #xlUserResolution,
+        #                   boolean _addToMru = false)
+        #{
+        #    Com doc;
+        #    str fileName = _fileName, path, name;
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    doc = excelDocument.getComDocument();
+        #    if (!fileName)
+        #    {
+        #        [path, name] = filenamesplit(target);
+        #        fileName = path + name;
+        #    }
+        #    doc.saveas(fileName, _fileFormat, _password, _writeResPassword, _readOnlyRecommended,
+        #               _createBackup, _accessMode, _conflictResolution, _addToMru, 0, 0, false);
+        #    if (_removeOriginal)
+        #    {
+        #        WinApi::deleteFile(target);
+        #    }
+        #    target = doc.fullName();
+        #    isDocumentSaved = true;
+        #}
+      ENDSOURCE
+      SOURCE #saveXml
+        #public void saveXml()
+        #{
+        #;
+        #    if (isDocumentEmpty)
+        #    {
+        #        this.insertBlock(0);
+        #    }
+        #    if (!isDocumentReady)
+        #    {
+        #        this.insertBlock(lastBlock);
+        #    }
+        #    this.flushBuffer();
+        #    textIo = null;
+        #    isDocumentSaved = true;
+        #}
+      ENDSOURCE
+      SOURCE #setDateStamp
+        #public void setDateStamp(MToolsHeaderFooter _hf = MToolsHeaderFooter::RightHeader, boolean showTime = true)
+        #{
+        #    COM sheet, pageSetup;
+        #    CompanyInfo companyInfo = CompanyInfo::find();
+        #    str text;
+        #    int i;
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    if (showTime)
+        #    {
+        #        text = strfmt('%1 - %2', time2str(timenow(), 1, 1), systemdateget());
+        #    }
+        #    else
+        #    {
+        #        text = strfmt('%1', systemdateget());
+        #    }
+        #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
+        #    {
+        #        sheet = excelDocument.getWorkSheet(i);
+        #        pageSetup = sheet.PageSetup();
+        #        switch (_hf)
+        #        {
+        #            case MToolsHeaderFooter::LeftHeader:
+        #                pageSetup.LeftHeader(text);
+        #                break;
+        #            case MToolsHeaderFooter::RightHeader:
+        #                pageSetup.RightHeader(text);
+        #                break;
+        #            case MToolsHeaderFooter::LeftFooter:
+        #                pageSetup.LeftFooter(text);
+        #                break;
+        #            case MToolsHeaderFooter::RightFooter:
+        #                pageSetup.RightFooter(text);
+        #                break;
+        #            default:
+        #                throw error('некорректное использование метода');
+        #        }
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #setHeaderFooter
+        #public void setHeaderFooter()
+        #{
+        #    COM app, doc, sheet, pageSetup;
+        #    CompanyInfo companyInfo = CompanyInfo::find();
+        #    int i;
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    doc = excelDocument.getComDocument();
+        #    app = doc.application();
+        #
+        #    this.setPageNumber();
+        #    this.setDateStamp();
+        #
+        #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
+        #    {
+        #        sheet = excelDocument.getWorkSheet(i);
+        #        pageSetup = sheet.PageSetup();
+        #        pageSetup.LeftHeader(companyInfo.Name);
+        #        pageSetup.RightFooter('Подготовлено с использованием системы Microsoft Dynamics AX');
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #setPageNumber
+        #public void setPageNumber(MToolsHeaderFooter _hf = MToolsHeaderFooter::LeftFooter)
+        #{
+        #    COM app, doc, sheet, pageSetup;
+        #    CompanyInfo companyInfo = CompanyInfo::find();
+        #    str ver;
+        #    str text;
+        #    int i;
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    doc = excelDocument.getComDocument();
+        #    app = doc.application();
+        #    ver = app.version();
+        #    if (ver like '12*')
+        #    {
+        #        text = @'Страница &P из &N';
+        #    }
+        #    else if (ver like '11*')
+        #    {
+        #        text = @'Страница &С из &К';
+        #    }
+        #    else
+        #    {
+        #        text = strfmt('Версия Excel не поддерживается (%2)', ver);
+        #    }
+        #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
+        #    {
+        #        sheet = excelDocument.getWorkSheet(i);
+        #        pageSetup = sheet.PageSetup();
+        #        switch (_hf)
+        #        {
+        #            case MToolsHeaderFooter::LeftHeader:
+        #                pageSetup.LeftHeader(text);
+        #                break;
+        #            case MToolsHeaderFooter::RightHeader:
+        #                pageSetup.RightHeader(text);
+        #                break;
+        #            case MToolsHeaderFooter::LeftFooter:
+        #                pageSetup.LeftFooter(text);
+        #                break;
+        #            case MToolsHeaderFooter::RightFooter:
+        #                pageSetup.RightFooter(text);
+        #                break;
+        #            default:
+        #                throw error('некорректное использование метода');
+        #        }
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #setSelectionPermission
+        #//look XlEnableSelection Enumeration for possible _enableSelection values
+        ##define.xlNoSelection(-4142)
+        #void setSelectionPermission(int _worksheet = 0, int _enableSelection = #xlNoSelection)
+        #{
+        #    Com     doc, app, activeSheet, sheets;
+        #    int     i, shFrom, shCount;
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #
+        #    doc = excelDocument.getComDocument();
+        #    app = doc.application();
+        #    sheets = app.sheets();
+        #
+        #    if (!_worksheet)
+        #    {
+        #        shFrom = 1;
+        #        shCount = sheets.count();
+        #    }
+        #    else
+        #    {
+        #        shFrom = _worksheet;
+        #        shCount = 1;
+        #    }
+        #
+        #    for (i = shFrom; i <= shCount; i++)
+        #    {
+        #        activeSheet = sheets.Item(i);
+        #        activeSheet.enableSelection(_enableSelection);
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #show
+        #void show()
+        #{
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    excelDocument.visible(true);
+        #}
+      ENDSOURCE
+      SOURCE #tempCleanup
+        ##define.tempCleanupMask('*.*')
+        ##WinApi
+        #protected void tempCleanup()
+        #{
+        #    FilePath    filePath;
+        #    FileName    fileName;
+        #    int         fileHandle, attrs;
+        #    container   fileInfo;
+        #
+        #    void processFile(str _file)
+        #    {
+        #        date        createDate;
+        #        timeofday   createTime;
+        #        int64       difference;
+        #        int         res;
+        #    ;
+        #        [createDate, createTime] = MToolsXMLExcelReport::getFileTimeLocal(_file);
+        #        difference = MToolsXMLExcelReport::getDateTimeDifference(createDate, createTime, today(), timenow());
+        #        if (difference >= #temporaryFileLifetime)
+        #        {
+        #            res = WinApi::deleteFile(_file);
+        #            if (res)
+        #            {
+        #                warning(strfmt('Не удаётся удалить временный файл "%1"', _file));
+        #            }
+        #        }
+        #    }
+        #;
+        #    filePath   = this.getTempPath();
+        #    fileInfo   = WinApi::findFirstFile(filePath + #tempCleanupMask);
+        #    fileHandle = conpeek(fileInfo,1);
+        #    fileName   = conpeek(fileInfo, 2);
+        #    while (fileName != '')
+        #    {
+        #        if(fileName != '..' && fileName != '.')
+        #        {
+        #            attrs = WinApi::getFileAttributes(filePath + fileName);
+        #            if(!(attrs & #FILE_ATTRIBUTE_DIRECTORY))
+        #            {
+        #               processFile(filePath + fileName);
+        #            }
+        #        }
+        #        fileName = WinApi::findNextFile(fileHandle);
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #any2StrXml
+        ##define.XmlNullDate("1901-01-01T00:00:00.000")
+        ##define.XmlNullTime("T00:00:00.000")
+        #public static str any2StrXml(anytype _data)
+        #{
+        #    str ret;
+        #;
+        #    switch (typeof(_data))
+        #    {
+        #        case Types::String:
+        #            ret = strrem(_data, '\n<>');
+        #            break;
+        #        case Types::Date:
+        #            if (_data)
+        #            {
+        #                ret = date2str(_data, 321, 2, 3, 2, 3, 4);
+        #                if (ret) ret += #XmlNullTime;
+        #            }
+        #            else
+        #            {
+        #                ret = #XmlNullDate;
+        #            }
+        #            break;
+        #        case Types::Integer:
+        #            ret = int2str(_data);
+        #            break;
+        #        case Types::Real:
+        #            ret = num2str(_data, -1, -1, 1, 0);
+        #            break;
+        #        case Types::Enum:
+        #            ret = enum2str(_data);
+        #            break;
+        #        default:
+        #            throw error('Неподдерживаемый тип данных.');
+        #    }
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #checkVBAObjectModelAccessEnabled
+        ##winapi
+        ##define.KeyName("AccessVBOM")
+        ##define.KeyPathExcel2007("Software\\Microsoft\\Office\\12.0\\Excel\\Security")
+        ##define.KeyPathExcel2003("Software\\Microsoft\\Office\\11.0\\Excel\\Security")
+        ##define.helpFileName('EnableVBAProjectAccess.htm')
+        #public static boolean checkVBAObjectModelAccessEnabled(boolean _verbose = false, boolean _showHelp = false)
+        #{
+        #    int res;
+        #    container buf;
+        #    int keyValue;
+        #    boolean ret = false;
+        #;
+        #    res = WinAPI::regOpenKey( #HKEY_CURRENT_USER, #KeyPathExcel2007, #KEY_READ);
+        #    if (res)
+        #    {
+        #        buf = WinAPI::regGetValue(res, #KeyName);
+        #        [keyValue] = buf;
+        #        if (keyValue)
+        #        {
+        #            ret = true;
+        #        }
+        #    }
+        #    if (!ret)
+        #    {
+        #        res = WinAPI::regOpenKey( #HKEY_CURRENT_USER, #KeyPathExcel2003, #KEY_READ);
+        #        if (res)
+        #        {
+        #            buf = WinAPI::regGetValue(res, #KeyName);
+        #            [keyValue] = buf;
+        #            if (keyValue)
+        #            {
+        #                ret = true;
+        #            }
+        #        }
+        #    }
+        #    if (!ret)
+        #    {
+        #        if (_verbose)
+        #        {
+        #            warning('Программный доступ к объектной модели VBA не разрешён.');
+        #        }
+        #        if (_verbose && _showHelp)
+        #        {
+        #            info('Следуйте инструкции по настройке доступа, указанной в открывшемся окне браузера.');
+        #            WinApi::shellExecute(templatefolder_w() + #helpFileName);
+        #        }
+        #    }
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #getDateTimeDifference
+        #public static int64 getDateTimeDifference(date _dateFrom, timeOfDay _timeFrom, date _dateTo, timeOfDay _timeTo)
+        #{
+        #    int64 ret;
+        #;
+        #    ret = (_dateTo - _dateFrom) * 86400;
+        #    ret += _timeTo - _timeFrom;
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #getFileTimeLocal
+        ##winapi
+        #public client static container getFileTimeLocal(Filename filename, int type = 0)
+        #{
+        #    int       hFile       = WinAPI::createFile(filename, #OPEN_EXISTING);
+        #    Binary    filetime;
+        #    Binary    systemTime;
+        #    Binary    localTime;
+        #
+        #    if (hFile)
+        #    {
+        #        filetime    = WinAPI::getFileTime(hFile, type);
+        #        WinAPI::closeHandle(hFile);
+        #        if (filetime)
+        #        {
+        #            systemTime  = WinAPI::fileTimeToSystemTime(filetime);
+        #            localTime   = WinAPI::systemTimeToTzSpecificLocalTime(systemTime);
+        #
+        #            if (localTime)
+        #            {
+        #                return [WinAPI::systemTimeToDate(localTime), WinAPI::systemTimeToTimeOfDay(localTime)];
+        #            }
+        #        }
+        #    }
+        #    return connull();
+        #
+        #}
+      ENDSOURCE
+    ENDMETHODS
+  ENDCLASS
+
+***Element: END

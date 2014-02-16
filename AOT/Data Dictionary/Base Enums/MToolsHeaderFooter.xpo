@@ -1,0 +1,50 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: DBE
+
+; Microsoft Dynamics Enumtype : MToolsHeaderFooter unloaded
+; --------------------------------------------------------------------------------
+  ENUMTYPEVERSION 1
+  
+  ENUMTYPE #MToolsHeaderFooter
+    Id 50043
+    PROPERTIES
+      Name                #MToolsHeaderFooter
+      UseEnumValue        #Yes
+    ENDPROPERTIES
+    
+    TYPEELEMENTS
+      #LeftHeader
+      PROPERTIES
+        Name                #LeftHeader
+        Label               #Element1
+        EnumValue           #0
+      ENDPROPERTIES
+      
+      #RightHeader
+      PROPERTIES
+        Name                #RightHeader
+        Label               #Element1
+        EnumValue           #1
+      ENDPROPERTIES
+      
+      #LeftFooter
+      PROPERTIES
+        Name                #LeftFooter
+        Label               #Element1
+        EnumValue           #2
+      ENDPROPERTIES
+      
+      #RightFooter
+      PROPERTIES
+        Name                #RightFooter
+        Label               #Element1
+        EnumValue           #3
+      ENDPROPERTIES
+      
+    ENDTYPEELEMENTS
+  ENDENUMTYPE
+  
+
+***Element: END

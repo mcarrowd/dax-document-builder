@@ -1,0 +1,45 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: CLS
+
+; Microsoft Dynamics Class: ComExcelDocument_RU выгружен
+; --------------------------------------------------------------------------------
+  CLSVERSION 1
+  
+  CLASS #ComExcelDocument_RU
+    Id 16004
+    PROPERTIES
+      Name                #ComExcelDocument_RU
+      Extends             #ComOfficeDocument_RU
+      RunOn               #Client
+    ENDPROPERTIES
+    
+    METHODS
+      Version: 3
+      SOURCE #GetWorkSheet
+        #public COM getWorkSheet(anytype _workSheetID)
+        #{
+        #    COM comRet;
+        #
+        #    if (m_comDocument)
+        #    {
+        #        try
+        #        {
+        #            this.getWorkSheets();
+        #            comRet = comWorkSheets.item(_workSheetID);
+        #        }
+        #
+        #        catch (Exception::Error)
+        #        {
+        #            throw error("@GEE6043");
+        #        }
+        #    }
+        #
+        #    return comRet;
+        #}
+      ENDSOURCE
+    ENDMETHODS
+  ENDCLASS
+
+***Element: END

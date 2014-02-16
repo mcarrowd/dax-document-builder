@@ -1,0 +1,96 @@
+Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: PRN
+
+; Microsoft Business Solutions-Axapta Project : MTools_XMLExcelReport unloaded at 2014.02.15
+; --------------------------------------------------------------------------------
+  PROJECTVERSION 2
+
+  PROJECT #MTools_XMLExcelReport
+   SHARED
+  PROPERTIES
+    Name                #MTools_XMLExcelReport
+  ENDPROPERTIES
+
+GROUP #Macros
+PROPERTIES 
+ Name                    #Macros
+ ProjectGroupType        #Macros
+ GroupMask               #
+ PreventEditProperties   #No
+ENDPROPERTIES 
+BEGINNODE
+    FILETYPE 0
+    UTILTYPE 4
+    UTILOBJECTID 0
+    NODETYPE 218
+    NAME #CLRInterop
+ENDNODE
+ENDGROUP
+
+
+GROUP #Classes
+PROPERTIES 
+ Name                    #Classes
+ ProjectGroupType        #Classes
+ GroupMask               #
+ PreventEditProperties   #No
+ENDPROPERTIES 
+BEGINNODE
+    FILETYPE 0
+    UTILTYPE 45
+    UTILOBJECTID 51798
+    NODETYPE 329
+    NAME #Tutorial_MToolsXMLExcelReport
+ENDNODE
+BEGINNODE
+    FILETYPE 0
+    UTILTYPE 45
+    UTILOBJECTID 51796
+    NODETYPE 329
+    NAME #MToolsXMLExcelReport
+ENDNODE
+BEGINNODE
+    FILETYPE 0
+    UTILTYPE 45
+    UTILOBJECTID 51797
+    NODETYPE 329
+    NAME #MToolsXMLExcelRunBase
+ENDNODE
+BEGINNODE
+    FILETYPE 0
+    UTILTYPE 45
+    UTILOBJECTID 61446
+    NODETYPE 329
+    NAME #Global
+ENDNODE
+BEGINNODE
+    FILETYPE 0
+    UTILTYPE 45
+    UTILOBJECTID 16004
+    NODETYPE 329
+    NAME #ComExcelDocument_RU
+ENDNODE
+ENDGROUP
+
+
+GROUP #BaseEnums
+PROPERTIES 
+ Name                    #BaseEnums
+ ProjectGroupType        #BaseEnums
+ GroupMask               #
+ PreventEditProperties   #No
+ENDPROPERTIES 
+BEGINNODE
+    FILETYPE 0
+    UTILTYPE 40
+    UTILOBJECTID 50043
+    NODETYPE 209
+    NAME #MToolsHeaderFooter
+ENDNODE
+ENDGROUP
+
+  ENDPROJECT
+
+***Element: END

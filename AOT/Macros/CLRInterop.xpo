@@ -1,0 +1,22 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: MCR
+
+; Microsoft Dynamics Macro: CLRInterop выгружен
+; --------------------------------------------------------------------------------
+  JOBVERSION 1
+  
+  SOURCE #CLRInterop
+    ##define.Enum_SystemIOFileMode('System.IO.FileMode')
+    ##define.Enum_SystemIOFileMode_Open(#Enum_SystemIOFileMode, 'Open')
+    ##define.Enum_SystemIOFileAccess('System.IO.FileAccess')
+    ##define.Enum_SystemIOFileAccess_Read(#Enum_SystemIOFileAccess, 'Read')
+    ##define.Enum_SystemIOFileShare('System.IO.FileShare')
+    ##define.Enum_SystemIOFileShare_ReadWrite(#Enum_SystemIOFileShare, 'ReadWrite')
+    #
+    ##define.Class_SystemIOFileStream('System.IO.FileStream')
+    #
+  ENDSOURCE
+
+***Element: END
