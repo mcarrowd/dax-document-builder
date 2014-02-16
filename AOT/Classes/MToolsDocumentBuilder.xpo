@@ -66,7 +66,6 @@ Formatversion: 1
         #                    templateBlockNames;
         #    int             lastBlock;
         #    TextBuffer      buffer;
-        #    TextIo          textIo;
         #    int             maxBufferSize;
         #    boolean         isDocumentTemporary,
         #                    isDocumentPrepared,
@@ -78,6 +77,7 @@ Formatversion: 1
         #                    blockNameRightQuote;
         #    int             blockNameMaxLength;
         #    str             documentFileExtension;
+        #    System.IO.StreamWriter      streamWriter;
         #
         #    #define.zeroBlockName('zero')
         #    #define.temporaryFolderName('DAXXMLSS')
@@ -152,9 +152,10 @@ Formatversion: 1
         #protected void flushBuffer()
         #{
         #;
-        #    if (textIo && buffer)
+        #    if (streamWriter && buffer)
         #    {
-        #        textIo.writeRaw(buffer.getText());
+        #        streamWriter.Write(buffer.getText());
+        #        streamWriter.Flush();
         #        buffer.setText('');
         #    }
         #}
@@ -229,16 +230,41 @@ Formatversion: 1
       SOURCE #initTargetFile
         #protected boolean initTargetFile()
         #{
-        #    #File
+        #    #CLRInterop
         #
-        #    FileIoPermission ioPermission;
+        #    InteropPermission permission;
+        #    System.IO.FileStream fileStream;
+        #    System.Text.UTF8Encoding utf8Encoding;
+        #    CLRObject fileMode, fileAccess, fileShare, clrException;
         #;
-        #    ioPermission = new FileIoPermission(target, #io_write);
-        #    ioPermission.assert();
-        #    //BP deviation documented
-        #    textIo = new TextIo(target, #io_write, 65001);
+        #    permission = new InteropPermission(InteropKind::ClrInterop);
+        #    permission.assert();
+        #    try
+        #    {
+        #        //BP deviation documented
+        #        utf8Encoding = new System.Text.UTF8Encoding(true);
+        #        fileMode   = ClrInterop::parseClrEnum(#Enum_SystemIOFileMode_CreateNew);
+        #        fileAccess = ClrInterop::parseClrEnum(#Enum_SystemIOFileAccess_Write);
+        #        fileShare  = ClrInterop::parseClrEnum(#Enum_SystemIOFileShare_Read);
+        #        //BP deviation documented
+        #        fileStream = new ClrObject(#Class_SystemIOFileStream, target, fileMode, fileAccess, fileShare);
+        #        //BP deviation documented
+        #        streamWriter = new System.IO.StreamWriter(fileStream, utf8Encoding);
+        #    }
+        #    catch (Exception::Internal)
+        #    {
+        #        //BP deviation documented
+        #        clrException = CLRInterop::getLastException();
+        #        throw error(getCLRExceprionText(clrException));
+        #    }
+        #    catch (Exception::CLRError)
+        #    {
+        #        //BP deviation documented
+        #        clrException = CLRInterop::getLastException();
+        #        throw error(getCLRExceprionText(clrException));
+        #    }
         #    CodeAccessPermission::revertAssert();
-        #    if (!textIo)
+        #    if (!streamWriter)
         #    {
         #        return checkfailed(strfmt("Невозможно открыть файл '%1' для записи", target));
         #    }
@@ -531,7 +557,9 @@ Formatversion: 1
         #        this.insertBlock(lastBlock);
         #    }
         #    this.flushBuffer();
-        #    textIo = null;
+        #    streamWriter.Close();
+        #    streamWriter.Dispose();
+        #    streamWriter = null;
         #    isDocumentSaved = true;
         #}
       ENDSOURCE

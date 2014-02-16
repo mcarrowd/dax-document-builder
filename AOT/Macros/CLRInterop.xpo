@@ -10,9 +10,12 @@ Formatversion: 1
   SOURCE #CLRInterop
     ##define.Enum_SystemIOFileMode('System.IO.FileMode')
     ##define.Enum_SystemIOFileMode_Open(#Enum_SystemIOFileMode, 'Open')
+    ##define.Enum_SystemIOFileMode_CreateNew(#Enum_SystemIOFileMode, 'CreateNew')
     ##define.Enum_SystemIOFileAccess('System.IO.FileAccess')
     ##define.Enum_SystemIOFileAccess_Read(#Enum_SystemIOFileAccess, 'Read')
+    ##define.Enum_SystemIOFileAccess_Write(#Enum_SystemIOFileAccess, 'Write')
     ##define.Enum_SystemIOFileShare('System.IO.FileShare')
+    ##define.Enum_SystemIOFileShare_Read(#Enum_SystemIOFileShare, 'Read')
     ##define.Enum_SystemIOFileShare_ReadWrite(#Enum_SystemIOFileShare, 'ReadWrite')
     #
     ##define.Class_SystemIOFileStream('System.IO.FileStream')
