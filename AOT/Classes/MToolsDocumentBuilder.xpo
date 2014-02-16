@@ -8,7 +8,7 @@ Formatversion: 1
   CLSVERSION 1
   
   CLASS #MToolsDocumentBuilder
-    Id 52043
+    Id 52042
     PROPERTIES
       Name                #MToolsDocumentBuilder
       Extends             #
@@ -17,25 +17,6 @@ Formatversion: 1
     
     METHODS
       Version: 3
-      SOURCE #autoFitRows
-        #public void autoFitRows()
-        #{
-        #    COM sheet, cells, range;
-        #    int i;
-        #;
-        #    if (!isDocumentOpen)
-        #    {
-        #        this.open();
-        #    }
-        #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
-        #    {
-        #        sheet = excelDocument.getWorkSheet(i);
-        #        cells = sheet.cells();
-        #        range = cells.entirerow();
-        #        range.autofit();
-        #    }
-        #}
-      ENDSOURCE
       SOURCE #bufferAppend
         #protected void bufferAppend(str _string)
         #{
@@ -58,10 +39,7 @@ Formatversion: 1
         #}
       ENDSOURCE
       SOURCE #classDeclaration
-        #/*
-        #    Движок для формирования документов Excel в формате XMLSS (Таблица XML 2003)
-        #*/
-        #class MToolsDocumentBuilder
+        #abstract class MToolsDocumentBuilder
         #{
         #    FileName        template,
         #                    target;
@@ -81,24 +59,15 @@ Formatversion: 1
         #    str             blockNameLeftQuote,
         #                    blockNameRightQuote;
         #    int             blockNameMaxLength;
-        #    boolean         expandNameBlocksToRowElement,
-        #                    placeholderTypecast,
-        #                    dataTypecast;
-        #
-        #    ComExcelDocument_RU excelDocument;
         #
         #    #define.zeroBlockName('zero')
-        #    #define.rowElementStartTag('<Row')
-        #    #define.rowElementEndTag('</Row>')
         #    #define.temporaryFolderName('DAXXMLSS')
-        #    #define.XMLFileExtension('.xml')
         #    #define.temporaryFileLifeTime(28800)
         #}
       ENDSOURCE
       SOURCE #defaultBlockNameLeftQuote
-        #public str defaultBlockNameLeftQuote()
+        #abstract public str defaultBlockNameLeftQuote()
         #{
-        #    return "<!--";
         #}
       ENDSOURCE
       SOURCE #defaultBlockNameMaxLength
@@ -108,112 +77,14 @@ Formatversion: 1
         #}
       ENDSOURCE
       SOURCE #defaultBlockNameRightQuote
-        #public str defaultBlockNameRightQuote()
+        #abstract public str defaultBlockNameRightQuote()
         #{
-        #    return "-->";
-        #}
-      ENDSOURCE
-      SOURCE #defaultDataTypecast
-        #public boolean defaultDataTypecast()
-        #{
-        #    return true;
-        #}
-      ENDSOURCE
-      SOURCE #defaultExpandNameBlocksToRowElement
-        #public int defaultExpandNameBlocksToRowElement()
-        #{
-        #    return false;
         #}
       ENDSOURCE
       SOURCE #defaultMaxBufferSize
         #public int defaultMaxBufferSize()
         #{
         #    return 0;
-        #}
-      ENDSOURCE
-      SOURCE #defaultPlaceholderTypecast
-        #public boolean defaultPlaceholderTypecast()
-        #{
-        #    return true;
-        #}
-      ENDSOURCE
-      SOURCE #displayFullScreen
-        ##define.xlNormal(-4143)
-        #public void displayFullScreen(boolean _display)
-        #{
-        #    Com doc, app;
-        #;
-        #    if (!isDocumentOpen)
-        #    {
-        #        this.open();
-        #    }
-        #    doc = excelDocument.getComDocument();
-        #    app = doc.application();
-        #    if (_display)
-        #    {
-        #        app.displayfullscreen(true);
-        #    }
-        #    else
-        #    {
-        #        app.windowState(#xlNormal);
-        #    }
-        #}
-      ENDSOURCE
-      SOURCE #displayGridLines
-        #public void displayGridLines(boolean _display)
-        #{
-        #    Com     doc, app, activeWindow;
-        #;
-        #    if (!isDocumentOpen)
-        #    {
-        #        this.open();
-        #    }
-        #    doc = excelDocument.getComDocument();
-        #    app = doc.application();
-        #    activeWindow = app.activeWindow();
-        #    activeWindow.displayGridLines(_display);
-        #}
-      ENDSOURCE
-      SOURCE #expandBlocksToElement
-        #protected container expandBlocksToElement(container _blocks, str _startTag, str _endTag)
-        #{
-        #    container ret;
-        #    int i;
-        #    int blockStart, blockEnd, elementStart, elementEnd;
-        #    str blockName;
-        #    int scanPos;
-        #    int len = strlen(templateData);
-        #;
-        #
-        #    for (i = 1; i <= conlen(_blocks); i ++)
-        #    {
-        #        elementStart = 0;
-        #        elementEnd   = 0;
-        #        [blockStart, blockEnd, blockName] = conpeek(_blocks, i);
-        #
-        #        scanPos = strscan(templateData, _startTag, blockStart - 1, - (blockStart - 1));
-        #        if (!strscan(templateData, _endTag, blockStart - 1, - (blockStart - scanPos - strlen(_startTag))))
-        #        {
-        #            elementStart = scanPos;
-        #        }
-        #
-        #        scanPos = strscan(templateData, _endTag, blockEnd + 1, len - blockEnd - 1);
-        #        if (!strscan(templateData, _startTag, blockEnd + 1,  scanPos - blockEnd - 1))
-        #        {
-        #            elementEnd = scanPos + strlen(_endTag) - 1;
-        #        }
-        #
-        #        if (elementStart && elementEnd)
-        #        {
-        #            ret += [[elementStart, elementEnd, blockName]];
-        #        }
-        #        else
-        #        {
-        #            ret += [[blockStart, blockEnd, blockName]];
-        #        }
-        #    }
-        #
-        #    return ret;
         #}
       ENDSOURCE
       SOURCE #findNameBlocks
@@ -264,13 +135,6 @@ Formatversion: 1
         #        textIo.writeRaw(buffer.getText());
         #        buffer.setText('');
         #    }
-        #}
-      ENDSOURCE
-      SOURCE #getComExcelDocument
-        #public ComExcelDocument_RU getComExcelDocument()
-        #{
-        #;
-        #    return excelDocument;
         #}
       ENDSOURCE
       SOURCE #getTempFile
@@ -454,15 +318,11 @@ Formatversion: 1
         #    blockNameLeftQuote           = this.defaultBlockNameLeftQuote();
         #    blockNameRightQuote          = this.defaultBlockNameRightQuote();
         #    blockNameMaxLength           = this.defaultBlockNameMaxLength();
-        #    expandNameBlocksToRowElement = this.defaultExpandNameBlocksToRowElement();
-        #    placeholderTypecast          = this.defaultPlaceholderTypecast();
-        #    dataTypecast                 = this.defaultDataTypecast();
         #    maxBufferSize                = this.defaultMaxBufferSize();
         #
         #    buffer             = new TextBuffer();
         #    templateBlocks     = new Map(Types::Integer, Types::String);
         #    templateBlockNames = new Map(Types::String, Types::Integer);
-        #    excelDocument      = new ComExcelDocument_RU();
         #
         #    template = _template;
         #    target   = _target;
@@ -475,21 +335,8 @@ Formatversion: 1
         #}
       ENDSOURCE
       SOURCE #open
-        #public void open()
+        #abstract void open()
         #{
-        #;
-        #    if (!isDocumentSaved)
-        #    {
-        #        this.saveXml();
-        #    }
-        #    if (excelDocument.open(target, false))
-        #    {
-        #        isDocumentOpen = true;
-        #    }
-        #    else
-        #    {
-        #        throw warning("Возникла одна или несколько ошибок при открытии документа в Excel.");
-        #    }
         #}
       ENDSOURCE
       SOURCE #parmBlockNameLeftQuote
@@ -516,36 +363,12 @@ Formatversion: 1
         #    return blockNameRightQuote;
         #}
       ENDSOURCE
-      SOURCE #parmDataTypecast
-        #public boolean parmDataTypecast(boolean _dataTypecast = dataTypecast)
-        #{
-        #    if (_dataTypecast != dataTypecast) dataTypecast = _dataTypecast;
-        #
-        #    return dataTypecast;
-        #}
-      ENDSOURCE
-      SOURCE #parmExpandNameBlocksToRowElement
-        #public boolean parmExpandNameBlocksToRowElement(boolean _expandNameBlocksToRowElement = expandNameBlocksToRowElement)
-        #{
-        #    if (_expandNameBlocksToRowElement != expandNameBlocksToRowElement) expandNameBlocksToRowElement = _expandNameBlocksToRowElement;
-        #
-        #    return expandNameBlocksToRowElement;
-        #}
-      ENDSOURCE
       SOURCE #parmMaxBufferSize
         #public int parmMaxBufferSize(int _maxBufferSize = maxBufferSize)
         #{
         #    if (_maxBufferSize != maxBufferSize) maxBufferSize = _maxBufferSize;
         #
         #    return maxBufferSize;
-        #}
-      ENDSOURCE
-      SOURCE #parmPlaceholderTypecast
-        #public boolean parmPlaceholderTypecast(boolean _placeholderTypecast = placeholderTypecast)
-        #{
-        #    if (_placeholderTypecast != placeholderTypecast) placeholderTypecast = _placeholderTypecast;
-        #
-        #    return placeholderTypecast;
         #}
       ENDSOURCE
       SOURCE #prepare
@@ -596,71 +419,6 @@ Formatversion: 1
         #        textBuffer.delete(textBuffer.matchPos() + 4, textBuffer.matchLen() - 4);
         #    }
         #    templateData = textBuffer.getText();
-        #}
-      ENDSOURCE
-      SOURCE #protectWorkbook
-        #void protectWorkbook(int _worksheet = 0, boolean _randomPassword = true, str _password = '',
-        #                     boolean _drawingObjects = true,           boolean _contents = true,
-        #                     boolean _scenarios = true,                boolean _userInterfaceOnly = true,
-        #                     boolean _allowFormattingCells = true,     boolean _allowFormattingColumns = true,
-        #                     boolean _allowFormattingRows = true,      boolean _allowInsertingColumns = true,
-        #                     boolean _allowInsertingRows = true,       boolean _allowInsertingHyperlinks = true,
-        #                     boolean _allowDeletingColumns = true,     boolean _allowDeletingRows = true,
-        #                     boolean _allowSorting = true,             boolean _allowFiltering = true,
-        #                     boolean _allowUsingPivotTables = true)
-        #{
-        #    Com     doc, app, activeSheet, sheets;
-        #    int     i, shFrom, shCount;
-        #    str     password = _password;
-        #;
-        #
-        #    if (!isDocumentOpen)
-        #    {
-        #        this.open();
-        #    }
-        #
-        #    doc = excelDocument.getComDocument();
-        #    app = doc.application();
-        #    sheets = app.sheets();
-        #
-        #    if (!_worksheet)
-        #    {
-        #        shFrom = 1;
-        #        shCount = sheets.count();
-        #    }
-        #    else
-        #    {
-        #        shFrom = _worksheet;
-        #        shCount = 1;
-        #    }
-        #
-        #    if (_randomPassword)
-        #    {
-        #        password = guid2str(newguid());
-        #    }
-        #
-        #    for (i = shFrom; i <= shCount; i++)
-        #    {
-        #        activeSheet = sheets.Item(i);
-        #        activeSheet.protect(
-        #            password,
-        #            _drawingObjects,
-        #            _contents,
-        #            _scenarios,
-        #            _userInterfaceOnly,
-        #            _allowFormattingCells,
-        #            _allowFormattingColumns,
-        #            _allowFormattingRows,
-        #            _allowInsertingColumns,
-        #            _allowInsertingRows,
-        #            _allowInsertingHyperlinks,
-        #            _allowDeletingColumns,
-        #            _allowDeletingRows,
-        #            _allowSorting,
-        #            _allowFiltering,
-        #            _allowUsingPivotTables
-        #            );
-        #    }
         #}
       ENDSOURCE
       SOURCE #readTemplate
@@ -744,47 +502,8 @@ Formatversion: 1
         #}
       ENDSOURCE
       SOURCE #save
-        #public void save()
+        #abstract void save()
         #{
-        #    Com doc;
-        #;
-        #    if (!isDocumentOpen)
-        #    {
-        #        this.open();
-        #    }
-        #    doc = excelDocument.getComDocument();
-        #    doc.save();
-        #    isDocumentSaved = true;
-        #}
-      ENDSOURCE
-      SOURCE #saveAs
-        ##Excel
-        #public void saveAs(boolean _removeOriginal = true, FileName _fileName = '', int _fileFormat = #xlWorkbookNormal,
-        #                   str _password = '', str _writeResPassword = '', boolean _readOnlyRecommended = false,
-        #                   boolean _createBackup = false, int _accessMode = #xlNoChange, int _conflictResolution = #xlUserResolution,
-        #                   boolean _addToMru = false)
-        #{
-        #    Com doc;
-        #    str fileName = _fileName, path, name;
-        #;
-        #    if (!isDocumentOpen)
-        #    {
-        #        this.open();
-        #    }
-        #    doc = excelDocument.getComDocument();
-        #    if (!fileName)
-        #    {
-        #        [path, name] = filenamesplit(target);
-        #        fileName = path + name;
-        #    }
-        #    doc.saveas(fileName, _fileFormat, _password, _writeResPassword, _readOnlyRecommended,
-        #               _createBackup, _accessMode, _conflictResolution, _addToMru, 0, 0, false);
-        #    if (_removeOriginal)
-        #    {
-        #        WinApi::deleteFile(target);
-        #    }
-        #    target = doc.fullName();
-        #    isDocumentSaved = true;
         #}
       ENDSOURCE
       SOURCE #saveXml
@@ -804,172 +523,9 @@ Formatversion: 1
         #    isDocumentSaved = true;
         #}
       ENDSOURCE
-      SOURCE #setDateStamp
-        #public void setDateStamp(MToolsHeaderFooter _hf = MToolsHeaderFooter::RightHeader, boolean showTime = true)
-        #{
-        #    COM sheet, pageSetup;
-        #    CompanyInfo companyInfo = CompanyInfo::find();
-        #    str text;
-        #    int i;
-        #;
-        #    if (!isDocumentOpen)
-        #    {
-        #        this.open();
-        #    }
-        #    if (showTime)
-        #    {
-        #        text = strfmt('%1 - %2', time2str(timenow(), 1, 1), systemdateget());
-        #    }
-        #    else
-        #    {
-        #        text = strfmt('%1', systemdateget());
-        #    }
-        #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
-        #    {
-        #        sheet = excelDocument.getWorkSheet(i);
-        #        pageSetup = sheet.PageSetup();
-        #        switch (_hf)
-        #        {
-        #            case MToolsHeaderFooter::LeftHeader:
-        #                pageSetup.LeftHeader(text);
-        #                break;
-        #            case MToolsHeaderFooter::RightHeader:
-        #                pageSetup.RightHeader(text);
-        #                break;
-        #            case MToolsHeaderFooter::LeftFooter:
-        #                pageSetup.LeftFooter(text);
-        #                break;
-        #            case MToolsHeaderFooter::RightFooter:
-        #                pageSetup.RightFooter(text);
-        #                break;
-        #            default:
-        #                throw error('некорректное использование метода');
-        #        }
-        #    }
-        #}
-      ENDSOURCE
-      SOURCE #setHeaderFooter
-        #public void setHeaderFooter()
-        #{
-        #    COM app, doc, sheet, pageSetup;
-        #    CompanyInfo companyInfo = CompanyInfo::find();
-        #    int i;
-        #;
-        #    if (!isDocumentOpen)
-        #    {
-        #        this.open();
-        #    }
-        #    doc = excelDocument.getComDocument();
-        #    app = doc.application();
-        #
-        #    this.setPageNumber();
-        #    this.setDateStamp();
-        #
-        #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
-        #    {
-        #        sheet = excelDocument.getWorkSheet(i);
-        #        pageSetup = sheet.PageSetup();
-        #        pageSetup.LeftHeader(companyInfo.Name);
-        #        pageSetup.RightFooter('Подготовлено с использованием системы Microsoft Dynamics AX');
-        #    }
-        #}
-      ENDSOURCE
-      SOURCE #setPageNumber
-        #public void setPageNumber(MToolsHeaderFooter _hf = MToolsHeaderFooter::LeftFooter)
-        #{
-        #    COM app, doc, sheet, pageSetup;
-        #    CompanyInfo companyInfo = CompanyInfo::find();
-        #    str ver;
-        #    str text;
-        #    int i;
-        #;
-        #    if (!isDocumentOpen)
-        #    {
-        #        this.open();
-        #    }
-        #    doc = excelDocument.getComDocument();
-        #    app = doc.application();
-        #    ver = app.version();
-        #    if (ver like '12*')
-        #    {
-        #        text = @'Страница &P из &N';
-        #    }
-        #    else if (ver like '11*')
-        #    {
-        #        text = @'Страница &С из &К';
-        #    }
-        #    else
-        #    {
-        #        text = strfmt('Версия Excel не поддерживается (%2)', ver);
-        #    }
-        #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
-        #    {
-        #        sheet = excelDocument.getWorkSheet(i);
-        #        pageSetup = sheet.PageSetup();
-        #        switch (_hf)
-        #        {
-        #            case MToolsHeaderFooter::LeftHeader:
-        #                pageSetup.LeftHeader(text);
-        #                break;
-        #            case MToolsHeaderFooter::RightHeader:
-        #                pageSetup.RightHeader(text);
-        #                break;
-        #            case MToolsHeaderFooter::LeftFooter:
-        #                pageSetup.LeftFooter(text);
-        #                break;
-        #            case MToolsHeaderFooter::RightFooter:
-        #                pageSetup.RightFooter(text);
-        #                break;
-        #            default:
-        #                throw error('некорректное использование метода');
-        #        }
-        #    }
-        #}
-      ENDSOURCE
-      SOURCE #setSelectionPermission
-        #//look XlEnableSelection Enumeration for possible _enableSelection values
-        ##define.xlNoSelection(-4142)
-        #void setSelectionPermission(int _worksheet = 0, int _enableSelection = #xlNoSelection)
-        #{
-        #    Com     doc, app, activeSheet, sheets;
-        #    int     i, shFrom, shCount;
-        #;
-        #    if (!isDocumentOpen)
-        #    {
-        #        this.open();
-        #    }
-        #
-        #    doc = excelDocument.getComDocument();
-        #    app = doc.application();
-        #    sheets = app.sheets();
-        #
-        #    if (!_worksheet)
-        #    {
-        #        shFrom = 1;
-        #        shCount = sheets.count();
-        #    }
-        #    else
-        #    {
-        #        shFrom = _worksheet;
-        #        shCount = 1;
-        #    }
-        #
-        #    for (i = shFrom; i <= shCount; i++)
-        #    {
-        #        activeSheet = sheets.Item(i);
-        #        activeSheet.enableSelection(_enableSelection);
-        #    }
-        #}
-      ENDSOURCE
       SOURCE #show
-        #void show()
+        #abstract void show()
         #{
-        #;
-        #    if (!isDocumentOpen)
-        #    {
-        #        this.open();
-        #    }
-        #    excelDocument.visible(true);
         #}
       ENDSOURCE
       SOURCE #tempCleanup
@@ -1017,95 +573,6 @@ Formatversion: 1
         #        }
         #        fileName = WinApi::findNextFile(fileHandle);
         #    }
-        #}
-      ENDSOURCE
-      SOURCE #any2StrXml
-        ##define.XmlNullDate("1901-01-01T00:00:00.000")
-        ##define.XmlNullTime("T00:00:00.000")
-        #public static str any2StrXml(anytype _data)
-        #{
-        #    str ret;
-        #;
-        #    switch (typeof(_data))
-        #    {
-        #        case Types::String:
-        #            ret = strrem(_data, '\n<>');
-        #            break;
-        #        case Types::Date:
-        #            if (_data)
-        #            {
-        #                ret = date2str(_data, 321, 2, 3, 2, 3, 4);
-        #                if (ret) ret += #XmlNullTime;
-        #            }
-        #            else
-        #            {
-        #                ret = #XmlNullDate;
-        #            }
-        #            break;
-        #        case Types::Integer:
-        #            ret = int2str(_data);
-        #            break;
-        #        case Types::Real:
-        #            ret = num2str(_data, -1, -1, 1, 0);
-        #            break;
-        #        case Types::Enum:
-        #            ret = enum2str(_data);
-        #            break;
-        #        default:
-        #            throw error('Неподдерживаемый тип данных.');
-        #    }
-        #    return ret;
-        #}
-      ENDSOURCE
-      SOURCE #checkVBAObjectModelAccessEnabled
-        ##winapi
-        ##define.KeyName("AccessVBOM")
-        ##define.KeyPathExcel2007("Software\\Microsoft\\Office\\12.0\\Excel\\Security")
-        ##define.KeyPathExcel2003("Software\\Microsoft\\Office\\11.0\\Excel\\Security")
-        ##define.helpFileName('EnableVBAProjectAccess.htm')
-        #public static boolean checkVBAObjectModelAccessEnabled(boolean _verbose = false, boolean _showHelp = false)
-        #{
-        #    int res;
-        #    container buf;
-        #    int keyValue;
-        #    boolean ret = false;
-        #;
-        #    res = WinAPI::regOpenKey( #HKEY_CURRENT_USER, #KeyPathExcel2007, #KEY_READ);
-        #    if (res)
-        #    {
-        #        buf = WinAPI::regGetValue(res, #KeyName);
-        #        [keyValue] = buf;
-        #        if (keyValue)
-        #        {
-        #            ret = true;
-        #        }
-        #    }
-        #    if (!ret)
-        #    {
-        #        res = WinAPI::regOpenKey( #HKEY_CURRENT_USER, #KeyPathExcel2003, #KEY_READ);
-        #        if (res)
-        #        {
-        #            buf = WinAPI::regGetValue(res, #KeyName);
-        #            [keyValue] = buf;
-        #            if (keyValue)
-        #            {
-        #                ret = true;
-        #            }
-        #        }
-        #    }
-        #    if (!ret)
-        #    {
-        #        if (_verbose)
-        #        {
-        #            warning('Программный доступ к объектной модели VBA не разрешён.');
-        #        }
-        #        if (_verbose && _showHelp)
-        #        {
-        #            info('Следуйте инструкции по настройке доступа, указанной в открывшемся окне браузера.');
-        #            WinApi::shellExecute(templatefolder_w() + #helpFileName);
-        #        }
-        #    }
-        #    return ret;
         #}
       ENDSOURCE
       SOURCE #getDateTimeDifference
