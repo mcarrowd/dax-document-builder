@@ -3,7 +3,7 @@ Formatversion: 1
 
 ***Element: PRN
 
-; Microsoft Business Solutions-Axapta Project : MTools_XMLExcelReport unloaded at 2014.02.15
+; Microsoft Business Solutions-Axapta Project : MTools_XMLExcelReport unloaded at 2014.02.16
 ; --------------------------------------------------------------------------------
   PROJECTVERSION 2
 
@@ -37,6 +37,13 @@ PROPERTIES
  GroupMask               #
  PreventEditProperties   #No
 ENDPROPERTIES 
+BEGINNODE
+    FILETYPE 0
+    UTILTYPE 45
+    UTILOBJECTID 52043
+    NODETYPE 329
+    NAME #MToolsDocumentBuilder
+ENDNODE
 BEGINNODE
     FILETYPE 0
     UTILTYPE 45
