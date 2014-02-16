@@ -28,8 +28,25 @@ Formatversion: 1
         #    }
         #}
       ENDSOURCE
-      SOURCE #checkDocument
-        #protected boolean checkDocument()
+      SOURCE #checkTargetFile
+        #protected boolean checkTargetFile()
+        #{
+        #    str fileExtention;
+        #;
+        #    fileExtention = conpeek(filenamesplit(target), 3);
+        #    if (strupr(fileExtention) != strupr(documentFileExtension))
+        #    {
+        #        return checkfailed(strfmt("Расширение файла документа '%1' не соответствует требуемому ('%2')", fileExtention, documentFileExtension));
+        #    }
+        #    if (WinApi::fileExists(target))
+        #    {
+        #        return checkfailed(strfmt("Файл '%1' уже существует", target));
+        #    }
+        #    return true;
+        #}
+      ENDSOURCE
+      SOURCE #checkTemplateFile
+        #protected boolean checkTemplateFile()
         #{
         #;
         #    if (!WinAPI::fileExists(template))
@@ -209,6 +226,25 @@ Formatversion: 1
         #    return tempDir;
         #}
       ENDSOURCE
+      SOURCE #initTargetFile
+        #protected boolean initTargetFile()
+        #{
+        #    #File
+        #
+        #    FileIoPermission ioPermission;
+        #;
+        #    ioPermission = new FileIoPermission(target, #io_write);
+        #    ioPermission.assert();
+        #    //BP deviation documented
+        #    textIo = new TextIo(target, #io_write, 65001);
+        #    CodeAccessPermission::revertAssert();
+        #    if (!textIo)
+        #    {
+        #        return checkfailed(strfmt("Невозможно открыть файл '%1' для записи", target));
+        #    }
+        #    return true;
+        #}
+      ENDSOURCE
       SOURCE #insertBlock
         #public void insertBlock(int _blockNum, container _placeHolders = connull(), container _data = connull())
         #{
@@ -278,35 +314,6 @@ Formatversion: 1
         #public int lastBlock()
         #{
         #    return lastBlock;
-        #}
-      ENDSOURCE
-      SOURCE #makeDocument
-        #protected boolean makeDocument()
-        #{
-        #    #File
-        #
-        #    FileIoPermission ioPermission;
-        #    str fileExtention;
-        #;
-        #    fileExtention = conpeek(filenamesplit(target), 3);
-        #    if (strupr(fileExtention) != strupr(documentFileExtension))
-        #    {
-        #        return checkfailed(strfmt("Расширение файла документа '%1' не соответствует требуемому ('%2')", fileExtention, documentFileExtension));
-        #    }
-        #    if (WinApi::fileExists(target))
-        #    {
-        #        return checkfailed(strfmt("Файл '%1' уже существует", target));
-        #    }
-        #    ioPermission = new FileIoPermission(target, #io_write);
-        #    ioPermission.assert();
-        #    //BP deviation documented
-        #    textIo = new TextIo(target, #io_write, 65001); //UTF-8
-        #    CodeAccessPermission::revertAssert();
-        #    if (!textIo)
-        #    {
-        #        return checkfailed(strfmt("Невозможно открыть файл '%1' для записи", target));
-        #    }
-        #    return true;
         #}
       ENDSOURCE
       SOURCE #new
@@ -389,21 +396,25 @@ Formatversion: 1
         #public void prepare()
         #{
         #;
-        #    if (!this.checkDocument())
+        #    if (!this.checkTemplateFile())
         #    {
-        #        throw warning("Невозможно загрузить шаблон документа");
+        #        throw error("Невозможно загрузить шаблон документа");
+        #    }
+        #    if (!this.checkTargetFile())
+        #    {
+        #        throw error("Невозможно создать файл документа");
         #    }
         #    if (isDocumentTemporary)
         #    {
         #        this.tempCleanup();
         #    }
-        #    if (!this.makeDocument())
+        #    if (!this.initTargetFile())
         #    {
-        #        throw warning("Невозможно создать файл документа");
+        #        throw error("Невозможно создать файл документа");
         #    }
         #    if (!this.readTemplate())
         #    {
-        #        throw warning("Невозможно разобрать шаблон документа");
+        #        throw error("Невозможно разобрать шаблон документа");
         #    }
         #    isDocumentPrepared = true;
         #}
