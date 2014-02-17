@@ -23,6 +23,7 @@ Formatversion: 1
         #    str             placeholderLeftQuote,
         #                    placeholderRightQuote;
         #
+        #    #define.RTFMarkupParagraph('\\par ')
         #    #define.RTFFileExtension('.rtf')
         #}
       ENDSOURCE
@@ -111,6 +112,49 @@ Formatversion: 1
         #public str defaultPlaceholderRightQuote()
         #{
         #    return '$';
+        #}
+      ENDSOURCE
+      SOURCE #expandBlocksToParagraph
+        #protected container expandBlocksToParagraph(container _blocks, str _tag)
+        #{
+        #    container ret;
+        #    int i;
+        #    int blockStart, blockEnd, paragraphEnd;
+        #    str blockName;
+        #    int scanPos, scanTo;
+        #    int len = strlen(templateData);
+        #;
+        #    for (i = 1; i <= conlen(_blocks); i ++)
+        #    {
+        #        [blockStart, blockEnd, blockName] = conpeek(_blocks, i);
+        #        scanTo = strScan(templateData, placeholderLeftQuote, blockEnd + 1, len - blockEnd - 1);
+        #        if (!scanTo)
+        #        {
+        #            scanTo = strScan(templateData, blockNameLeftQuote, blockEnd + 1, len - blockEnd - 1);
+        #            if (!scanTo)
+        #            {
+        #                scanTo = len + 1;
+        #            }
+        #        }
+        #        paragraphEnd = blockEnd;
+        #        scanPos = strScan(templateData, _tag, blockEnd + 1, scanTo - blockEnd - 1);
+        #        if (scanPos)
+        #        {
+        #            paragraphEnd = scanPos + strlen(_tag) - 1;
+        #        }
+        #        ret += [[blockStart, paragraphEnd, blockName]];
+        #    }
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #findNameBlocks
+        #protected container findNameBlocks()
+        #{
+        #    container ret;
+        #;
+        #    ret = super();
+        #    ret = this.expandBlocksToParagraph(ret, #RTFMarkupParagraph);
+        #    return ret;
         #}
       ENDSOURCE
       SOURCE #findPlaceholderBlocks
