@@ -20,6 +20,9 @@ Formatversion: 1
       SOURCE #classDeclaration
         #class MToolsDocumentBuilder_RTF extends MToolsDocumentBuilder
         #{
+        #    str             placeholderLeftQuote,
+        #                    placeholderRightQuote;
+        #
         #    #define.RTFFileExtension('.rtf')
         #}
       ENDSOURCE
@@ -47,12 +50,50 @@ Formatversion: 1
         #    return #RTFFileExtension;
         #}
       ENDSOURCE
+      SOURCE #defaultPlaceholderLeftQuote
+        #public str defaultPlaceholderLeftQuote()
+        #{
+        #    return '$';
+        #}
+      ENDSOURCE
+      SOURCE #defaultPlaceholderRightQuote
+        #public str defaultPlaceholderRightQuote()
+        #{
+        #    return '$';
+        #}
+      ENDSOURCE
+      SOURCE #new
+        #void new(FileName _template, FileName _target = '')
+        #{
+        #;
+        #    super(_template, _target);
+        #
+        #    placeholderLeftQuote          = this.defaultPlaceholderLeftQuote();
+        #    placeholderRightQuote         = this.defaultPlaceholderRightQuote();
+        #}
+      ENDSOURCE
       SOURCE #open
         #void open()
         #{
         #;
         #    WinApi::shellExecute('winword.exe', target);
         #    //WinApi::shellExecute('notepad.exe', target);
+        #}
+      ENDSOURCE
+      SOURCE #parmPlaceholderLeftQuote
+        #public str parmPlaceholderLeftQuote(str _placeholderLeftQuote = placeholderLeftQuote)
+        #{
+        #    if (_placeholderLeftQuote != placeholderLeftQuote) placeholderLeftQuote = _placeholderLeftQuote;
+        #
+        #    return placeholderLeftQuote;
+        #}
+      ENDSOURCE
+      SOURCE #parmPlaceholderRightQuote
+        #public str parmPlaceholderRightQuote(str _placeholderRightQuote = placeholderRightQuote)
+        #{
+        #    if (_placeholderRightQuote != placeholderRightQuote) placeholderRightQuote = _placeholderRightQuote;
+        #
+        #    return placeholderRightQuote;
         #}
       ENDSOURCE
       SOURCE #save
