@@ -145,6 +145,12 @@ Formatversion: 1
         #    return placeholderRightQuote;
         #}
       ENDSOURCE
+      SOURCE #preparePlaceHolder
+        #protected str preparePlaceHolder(anytype _placeHolder)
+        #{
+        #    return strfmt('%1%2%3', placeholderLeftQuote, _placeHolder, placeholderRightQuote);
+        #}
+      ENDSOURCE
       SOURCE #readTemplate
         #protected boolean readTemplate()
         #{
