@@ -26,6 +26,38 @@ Formatversion: 1
         #    #define.RTFFileExtension('.rtf')
         #}
       ENDSOURCE
+      SOURCE #cleanupTemplateBlockPlaceholders
+        #protected void cleanupTemplateBlockPlaceholders()
+        #{
+        #    Map templateBlocksProcessed;
+        #    MapEnumerator me;
+        #    int blockNum;
+        #    str blockContent;
+        #    container placeholderBlocks, placeholderBlock;
+        #    int i, len;
+        #    int leftQuoteStart, rightQuoteEnd;
+        #    str placeholder, placeholderClear;
+        #;
+        #    templateBlocksProcessed = new Map(Types::Integer, Types::String);
+        #    me = templateBlocks.getEnumerator();
+        #    while (me.moveNext())
+        #    {
+        #        blockNum = me.currentKey();
+        #        blockContent = me.currentValue();
+        #        placeholderBlocks = this.findPlaceholderBlocks(blockContent);
+        #        len = conlen(placeholderBlocks);
+        #        for (i = 1; i <= len; i ++)
+        #        {
+        #            placeholderBlock = conpeek(placeholderBlocks, i);
+        #            [leftQuoteStart, rightQuoteEnd, placeholder] = placeholderBlock;
+        #            placeholderClear = MToolsDocumentBuilder_RTF::cleanupRTFMarkup(placeholder);
+        #            blockContent = strreplace(blockContent, placeholder, placeholderClear);
+        #        }
+        #        templateBlocksProcessed.insert(blockNum, blockContent);
+        #    }
+        #    templateBlocks = templateBlocksProcessed;
+        #}
+      ENDSOURCE
       SOURCE #defaultBlockNameLeftQuote
         #public str defaultBlockNameLeftQuote()
         #{
@@ -62,6 +94,23 @@ Formatversion: 1
         #    return '$';
         #}
       ENDSOURCE
+      SOURCE #findPlaceholderBlocks
+        #protected container findPlaceholderBlocks(str _content)
+        #{
+        #    container parseResult, ret;
+        #    int i, len, leftQuoteStart, leftQuoteEnd, rightQuoteStart, rightQuoteEnd;
+        #    str placeholder;
+        #;
+        #    parseResult = MToolsDocumentBuilder::parseQuotedTokens(_content, placeholderLeftQuote, placeholderRightQuote);
+        #    len = conlen(parseResult);
+        #    for (i = 1; i <= len; i ++)
+        #    {
+        #        [placeholder, leftQuoteStart, leftQuoteEnd, rightQuoteStart, rightQuoteEnd] = conpeek(parseResult, i);
+        #        ret += [[leftQuoteStart, rightQuoteEnd, placeholder]];
+        #    }
+        #    return ret;
+        #}
+      ENDSOURCE
       SOURCE #new
         #void new(FileName _template, FileName _target = '')
         #{
@@ -96,6 +145,16 @@ Formatversion: 1
         #    return placeholderRightQuote;
         #}
       ENDSOURCE
+      SOURCE #readTemplate
+        #protected boolean readTemplate()
+        #{
+        #    boolean ret;
+        #;
+        #    ret = super();
+        #    this.cleanupTemplateBlockPlaceholders();
+        #    return ret;
+        #}
+      ENDSOURCE
       SOURCE #save
         #void save()
         #{
@@ -108,6 +167,22 @@ Formatversion: 1
         #{
         #;
         #    this.open();
+        #}
+      ENDSOURCE
+      SOURCE #cleanupRTFMarkup
+        #public static str cleanupRTFMarkup(str _content)
+        #{
+        #    #define.RTFTagPattern('\\\\:n+')
+        #    #define.RTFMarkupSymbols(' {}\r\n')
+        #
+        #    TextBuffer textBuffer = new TextBuffer();
+        #    str ret;
+        #;
+        #    textBuffer.setText(_content);
+        #    textBuffer.replace(#RTFTagPattern, '');
+        #    ret = textBuffer.getText();
+        #    ret = strrem(ret, #RTFMarkupSymbols);
+        #    return ret;
         #}
       ENDSOURCE
     ENDMETHODS
