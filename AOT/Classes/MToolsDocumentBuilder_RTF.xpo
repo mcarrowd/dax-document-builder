@@ -29,6 +29,12 @@ Formatversion: 1
         #    return '#!';
         #}
       ENDSOURCE
+      SOURCE #defaultBlockNameMaxLength
+        #public int defaultBlockNameMaxLength()
+        #{
+        #    return 0;
+        #}
+      ENDSOURCE
       SOURCE #defaultBlockNameRightQuote
         #public str defaultBlockNameRightQuote()
         #{

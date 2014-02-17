@@ -142,7 +142,7 @@ Formatversion: 1
         #                if (leftQuoteStart && leftQuoteEnd && rightQuoteStart && rightQuoteEnd)
         #                {
         #                    blockNameLen = rightQuoteStart - leftQuoteEnd - 1;
-        #                    if (blockNameLen <= blockNameMaxLength)
+        #                    if (!blockNameMaxLength || (blockNameLen <= blockNameMaxLength))
         #                    {
         #                        blockName = substr(templateData, leftQuoteEnd + 1, blockNameLen);
         #                        ret += [[leftQuoteStart, rightQuoteEnd, blockName]];
