@@ -31,6 +31,18 @@ Formatversion: 1
         #    this.saveDocumentFile();
         #}
       ENDSOURCE
+      SOURCE #any2StrXml
+        #public static str any2StrXml(anytype _data)
+        #{
+        #    return MToolsDocumentBuilder_XMLSS::any2StrXml(_data);
+        #}
+      ENDSOURCE
+      SOURCE #checkVBAObjectModelAccessEnabled
+        #public static boolean checkVBAObjectModelAccessEnabled(boolean _verbose = false, boolean _showHelp = false)
+        #{
+        #    return MToolsDocumentBuilder_XMLSS::checkVBAObjectModelAccessEnabled(_verbose, _showHelp);
+        #}
+      ENDSOURCE
     ENDMETHODS
   ENDCLASS
 
