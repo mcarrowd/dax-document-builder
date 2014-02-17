@@ -26,6 +26,25 @@ Formatversion: 1
         #    #define.RTFFileExtension('.rtf')
         #}
       ENDSOURCE
+      SOURCE #cleanupTemplateBlockNames
+        #protected void cleanupTemplateBlockNames()
+        #{
+        #    Map templateBlockNamesProcessed;
+        #    MapEnumerator me;
+        #    str blockName;
+        #    int blockNum;
+        #;
+        #    templateBlockNamesProcessed = new Map(Types::String, Types::Integer);
+        #    me = templateBlockNames.getEnumerator();
+        #    while (me.moveNext())
+        #    {
+        #        blockName = me.currentKey();
+        #        blockNum = me.currentValue();
+        #        templateBlockNamesProcessed.insert(MToolsDocumentBuilder_RTF::cleanupRTFMarkup(blockName), blockNum);
+        #    }
+        #    templateBlockNames = templateBlockNamesProcessed;
+        #}
+      ENDSOURCE
       SOURCE #cleanupTemplateBlockPlaceholders
         #protected void cleanupTemplateBlockPlaceholders()
         #{
@@ -157,6 +176,7 @@ Formatversion: 1
         #    boolean ret;
         #;
         #    ret = super();
+        #    this.cleanupTemplateBlockNames();
         #    this.cleanupTemplateBlockPlaceholders();
         #    return ret;
         #}
