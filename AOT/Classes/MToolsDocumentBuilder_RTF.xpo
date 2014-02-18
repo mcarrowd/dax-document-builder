@@ -27,8 +27,6 @@ Formatversion: 1
         #
         #    #define.RTFMarkupParagraph('\\par ')
         #    #define.RTFFileExtension('.rtf')
-        #
-        #    #define.wdFormatDocumentDefault(16)
         #}
       ENDSOURCE
       SOURCE #cleanupTemplateBlockNames
@@ -263,7 +261,7 @@ Formatversion: 1
         #}
       ENDSOURCE
       SOURCE #saveAs
-        #public void saveAs(boolean _removeOriginal = true, FileName _fileName = '', int _fileFormat = #wdFormatDocumentDefault,
+        #public void saveAs(boolean _removeOriginal = true, FileName _fileName = '', int _fileFormat = 0,
         #                   boolean _lockComments = false, str _password = '', boolean _addToRecentFiles = true,
         #                   str _writePassword = '', boolean _readOnlyRecommended = false, boolean _embedTrueTypeFonts = false,
         #                   boolean _saveNativePictureFormat = false, boolean _saveFormsData = false, boolean _saveAsAOCELetter = false,
