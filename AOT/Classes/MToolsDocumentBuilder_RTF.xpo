@@ -23,8 +23,12 @@ Formatversion: 1
         #    str             placeholderLeftQuote,
         #                    placeholderRightQuote;
         #
+        #    ComWordDocument_RU wordDocument;
+        #
         #    #define.RTFMarkupParagraph('\\par ')
         #    #define.RTFFileExtension('.rtf')
+        #
+        #    #define.wdFormatDocumentDefault(16)
         #}
       ENDSOURCE
       SOURCE #cleanupTemplateBlockNames
@@ -174,22 +178,40 @@ Formatversion: 1
         #    return ret;
         #}
       ENDSOURCE
+      SOURCE #getComWordDocument
+        #public ComWordDocument_RU getComWordDocument()
+        #{
+        #    return wordDocument;
+        #}
+      ENDSOURCE
       SOURCE #new
         #void new(FileName _template, FileName _target = '')
         #{
         #;
-        #    super(_template, _target);
-        #
         #    placeholderLeftQuote          = this.defaultPlaceholderLeftQuote();
         #    placeholderRightQuote         = this.defaultPlaceholderRightQuote();
+        #
+        #    wordDocument = new ComWordDocument_RU();
+        #
+        #    super(_template, _target);
         #}
       ENDSOURCE
       SOURCE #open
         #void open()
         #{
         #;
-        #    WinApi::shellExecute('winword.exe', target);
-        #    //WinApi::shellExecute('notepad.exe', target);
+        #    if (!isDocumentSaved)
+        #    {
+        #        this.saveDocumentFile();
+        #    }
+        #    if (wordDocument.open(target, false))
+        #    {
+        #        isDocumentOpen = true;
+        #    }
+        #    else
+        #    {
+        #        throw warning("Возникла одна или несколько ошибок при открытии документа в Word.");
+        #    }
         #}
       ENDSOURCE
       SOURCE #parmPlaceholderLeftQuote
@@ -228,15 +250,62 @@ Formatversion: 1
       SOURCE #save
         #void save()
         #{
+        #    Com doc;
         #;
-        #    this.saveDocumentFile();
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    doc = wordDocument.getComDocument();
+        #    //BP deviation documented
+        #    doc.save();
+        #    isDocumentSaved = true;
+        #}
+      ENDSOURCE
+      SOURCE #saveAs
+        #public void saveAs(boolean _removeOriginal = true, FileName _fileName = '', int _fileFormat = #wdFormatDocumentDefault,
+        #                   boolean _lockComments = false, str _password = '', boolean _addToRecentFiles = true,
+        #                   str _writePassword = '', boolean _readOnlyRecommended = false, boolean _embedTrueTypeFonts = false,
+        #                   boolean _saveNativePictureFormat = false, boolean _saveFormsData = false, boolean _saveAsAOCELetter = false,
+        #                   int _encoding = 0, boolean _insertLineBreaks = false, boolean _allowSubstitutions = false,
+        #                   int _lineEnding = 0, boolean _addBiDiMarks = false)
+        #{
+        #    Com doc;
+        #    str fileName = _fileName, path, name;
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    doc = wordDocument.getComDocument();
+        #    if (!fileName)
+        #    {
+        #        [path, name] = filenamesplit(target);
+        #        fileName = path + name;
+        #    }
+        #    //BP deviation documented
+        #    doc.saveas(fileName, _fileFormat, _lockComments, _password, _addToRecentFiles,
+        #               _writePassword, _readOnlyRecommended, _embedTrueTypeFonts, _saveNativePictureFormat,
+        #               _saveFormsData, _saveAsAOCELetter, _encoding, _insertLineBreaks, _allowSubstitutions,
+        #               _lineEnding, _addBiDiMarks);
+        #    if (_removeOriginal)
+        #    {
+        #        WinApi::deleteFile(target);
+        #    }
+        #    //BP deviation documented
+        #    target = doc.fullName();
+        #    isDocumentSaved = true;
         #}
       ENDSOURCE
       SOURCE #show
         #void show()
         #{
         #;
-        #    this.open();
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    wordDocument.visible(true);
         #}
       ENDSOURCE
       SOURCE #cleanupRTFMarkup
