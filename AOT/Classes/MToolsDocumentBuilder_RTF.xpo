@@ -1,0 +1,328 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: CLS
+
+; Microsoft Dynamics Class: MToolsDocumentBuilder_RTF выгружен
+; --------------------------------------------------------------------------------
+  CLSVERSION 1
+  
+  CLASS #MToolsDocumentBuilder_RTF
+    Id 52043
+    PROPERTIES
+      Name                #MToolsDocumentBuilder_RTF
+      Extends             #MToolsDocumentBuilder
+      RunOn               #Called from
+    ENDPROPERTIES
+    
+    METHODS
+      Version: 3
+      SOURCE #classDeclaration
+        #class MToolsDocumentBuilder_RTF extends MToolsDocumentBuilder
+        #{
+        #    str             placeholderLeftQuote,
+        #                    placeholderRightQuote;
+        #
+        #    ComWordDocument_RU wordDocument;
+        #
+        #    #define.RTFMarkupParagraph('\\par ')
+        #    #define.RTFFileExtension('.rtf')
+        #}
+      ENDSOURCE
+      SOURCE #cleanupTemplateBlockNames
+        #protected void cleanupTemplateBlockNames()
+        #{
+        #    Map templateBlockNamesProcessed;
+        #    MapEnumerator me;
+        #    str blockName;
+        #    int blockNum;
+        #;
+        #    templateBlockNamesProcessed = new Map(Types::String, Types::Integer);
+        #    me = templateBlockNames.getEnumerator();
+        #    while (me.moveNext())
+        #    {
+        #        blockName = me.currentKey();
+        #        blockNum = me.currentValue();
+        #        templateBlockNamesProcessed.insert(MToolsDocumentBuilder_RTF::cleanupRTFMarkup(blockName), blockNum);
+        #    }
+        #    templateBlockNames = templateBlockNamesProcessed;
+        #}
+      ENDSOURCE
+      SOURCE #cleanupTemplateBlockPlaceholders
+        #protected void cleanupTemplateBlockPlaceholders()
+        #{
+        #    Map templateBlocksProcessed;
+        #    MapEnumerator me;
+        #    int blockNum;
+        #    str blockContent;
+        #    container placeholderBlocks, placeholderBlock;
+        #    int i, len;
+        #    int leftQuoteStart, rightQuoteEnd;
+        #    str placeholder, placeholderClear;
+        #;
+        #    templateBlocksProcessed = new Map(Types::Integer, Types::String);
+        #    me = templateBlocks.getEnumerator();
+        #    while (me.moveNext())
+        #    {
+        #        blockNum = me.currentKey();
+        #        blockContent = me.currentValue();
+        #        placeholderBlocks = this.findPlaceholderBlocks(blockContent);
+        #        len = conlen(placeholderBlocks);
+        #        for (i = 1; i <= len; i ++)
+        #        {
+        #            placeholderBlock = conpeek(placeholderBlocks, i);
+        #            [leftQuoteStart, rightQuoteEnd, placeholder] = placeholderBlock;
+        #            placeholderClear = MToolsDocumentBuilder_RTF::cleanupRTFMarkup(placeholder);
+        #            blockContent = strreplace(blockContent, placeholder, placeholderClear);
+        #        }
+        #        templateBlocksProcessed.insert(blockNum, blockContent);
+        #    }
+        #    templateBlocks = templateBlocksProcessed;
+        #}
+      ENDSOURCE
+      SOURCE #defaultBlockNameLeftQuote
+        #public str defaultBlockNameLeftQuote()
+        #{
+        #    return '#';
+        #}
+      ENDSOURCE
+      SOURCE #defaultBlockNameMaxLength
+        #public int defaultBlockNameMaxLength()
+        #{
+        #    return 0;
+        #}
+      ENDSOURCE
+      SOURCE #defaultBlockNameRightQuote
+        #public str defaultBlockNameRightQuote()
+        #{
+        #    return '#';
+        #}
+      ENDSOURCE
+      SOURCE #defaultDocumentFileExtension
+        #public str defaultDocumentFileExtension()
+        #{
+        #    return #RTFFileExtension;
+        #}
+      ENDSOURCE
+      SOURCE #defaultPlaceholderLeftQuote
+        #public str defaultPlaceholderLeftQuote()
+        #{
+        #    return '$';
+        #}
+      ENDSOURCE
+      SOURCE #defaultPlaceholderRightQuote
+        #public str defaultPlaceholderRightQuote()
+        #{
+        #    return '$';
+        #}
+      ENDSOURCE
+      SOURCE #expandBlocksToParagraph
+        #protected container expandBlocksToParagraph(container _blocks, str _tag)
+        #{
+        #    container ret;
+        #    int i;
+        #    int blockStart, blockEnd, paragraphEnd;
+        #    str blockName;
+        #    int scanPos, scanTo;
+        #    int len = strlen(templateData);
+        #;
+        #    for (i = 1; i <= conlen(_blocks); i ++)
+        #    {
+        #        [blockStart, blockEnd, blockName] = conpeek(_blocks, i);
+        #        scanTo = strScan(templateData, placeholderLeftQuote, blockEnd + 1, len - blockEnd - 1);
+        #        if (!scanTo)
+        #        {
+        #            scanTo = strScan(templateData, blockNameLeftQuote, blockEnd + 1, len - blockEnd - 1);
+        #            if (!scanTo)
+        #            {
+        #                scanTo = len + 1;
+        #            }
+        #        }
+        #        paragraphEnd = blockEnd;
+        #        scanPos = strScan(templateData, _tag, blockEnd + 1, scanTo - blockEnd - 1);
+        #        if (scanPos)
+        #        {
+        #            paragraphEnd = scanPos + strlen(_tag) - 1;
+        #        }
+        #        ret += [[blockStart, paragraphEnd, blockName]];
+        #    }
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #findNameBlocks
+        #protected container findNameBlocks()
+        #{
+        #    container ret;
+        #;
+        #    ret = super();
+        #    ret = this.expandBlocksToParagraph(ret, #RTFMarkupParagraph);
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #findPlaceholderBlocks
+        #protected container findPlaceholderBlocks(str _content)
+        #{
+        #    container parseResult, ret;
+        #    int i, len, leftQuoteStart, leftQuoteEnd, rightQuoteStart, rightQuoteEnd;
+        #    str placeholder;
+        #;
+        #    parseResult = MToolsDocumentBuilder::parseQuotedTokens(_content, placeholderLeftQuote, placeholderRightQuote);
+        #    len = conlen(parseResult);
+        #    for (i = 1; i <= len; i ++)
+        #    {
+        #        [placeholder, leftQuoteStart, leftQuoteEnd, rightQuoteStart, rightQuoteEnd] = conpeek(parseResult, i);
+        #        ret += [[leftQuoteStart, rightQuoteEnd, placeholder]];
+        #    }
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #getComWordDocument
+        #public ComWordDocument_RU getComWordDocument()
+        #{
+        #    return wordDocument;
+        #}
+      ENDSOURCE
+      SOURCE #new
+        #void new(FileName _template, FileName _target = '')
+        #{
+        #;
+        #    placeholderLeftQuote          = this.defaultPlaceholderLeftQuote();
+        #    placeholderRightQuote         = this.defaultPlaceholderRightQuote();
+        #
+        #    wordDocument = new ComWordDocument_RU();
+        #
+        #    super(_template, _target);
+        #}
+      ENDSOURCE
+      SOURCE #open
+        #void open()
+        #{
+        #;
+        #    if (!isDocumentSaved)
+        #    {
+        #        this.saveDocumentFile();
+        #    }
+        #    if (wordDocument.open(target, false))
+        #    {
+        #        isDocumentOpen = true;
+        #    }
+        #    else
+        #    {
+        #        throw warning("Возникла одна или несколько ошибок при открытии документа в Word.");
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #parmPlaceholderLeftQuote
+        #public str parmPlaceholderLeftQuote(str _placeholderLeftQuote = placeholderLeftQuote)
+        #{
+        #    if (_placeholderLeftQuote != placeholderLeftQuote) placeholderLeftQuote = _placeholderLeftQuote;
+        #
+        #    return placeholderLeftQuote;
+        #}
+      ENDSOURCE
+      SOURCE #parmPlaceholderRightQuote
+        #public str parmPlaceholderRightQuote(str _placeholderRightQuote = placeholderRightQuote)
+        #{
+        #    if (_placeholderRightQuote != placeholderRightQuote) placeholderRightQuote = _placeholderRightQuote;
+        #
+        #    return placeholderRightQuote;
+        #}
+      ENDSOURCE
+      SOURCE #preparePlaceHolder
+        #protected str preparePlaceHolder(anytype _placeHolder)
+        #{
+        #    return strfmt('%1%2%3', placeholderLeftQuote, _placeHolder, placeholderRightQuote);
+        #}
+      ENDSOURCE
+      SOURCE #readTemplate
+        #protected boolean readTemplate()
+        #{
+        #    boolean ret;
+        #;
+        #    ret = super();
+        #    this.cleanupTemplateBlockNames();
+        #    this.cleanupTemplateBlockPlaceholders();
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #save
+        #void save()
+        #{
+        #    Com doc;
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    doc = wordDocument.getComDocument();
+        #    //BP deviation documented
+        #    doc.save();
+        #    isDocumentSaved = true;
+        #}
+      ENDSOURCE
+      SOURCE #saveAs
+        #public void saveAs(boolean _removeOriginal = true, FileName _fileName = '', int _fileFormat = 0,
+        #                   boolean _lockComments = false, str _password = '', boolean _addToRecentFiles = true,
+        #                   str _writePassword = '', boolean _readOnlyRecommended = false, boolean _embedTrueTypeFonts = false,
+        #                   boolean _saveNativePictureFormat = false, boolean _saveFormsData = false, boolean _saveAsAOCELetter = false,
+        #                   int _encoding = 0, boolean _insertLineBreaks = false, boolean _allowSubstitutions = false,
+        #                   int _lineEnding = 0, boolean _addBiDiMarks = false)
+        #{
+        #    Com doc;
+        #    str fileName = _fileName, path, name;
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    doc = wordDocument.getComDocument();
+        #    if (!fileName)
+        #    {
+        #        [path, name] = filenamesplit(target);
+        #        fileName = path + name;
+        #    }
+        #    //BP deviation documented
+        #    doc.saveas(fileName, _fileFormat, _lockComments, _password, _addToRecentFiles,
+        #               _writePassword, _readOnlyRecommended, _embedTrueTypeFonts, _saveNativePictureFormat,
+        #               _saveFormsData, _saveAsAOCELetter, _encoding, _insertLineBreaks, _allowSubstitutions,
+        #               _lineEnding, _addBiDiMarks);
+        #    if (_removeOriginal)
+        #    {
+        #        WinApi::deleteFile(target);
+        #    }
+        #    //BP deviation documented
+        #    target = doc.fullName();
+        #    isDocumentSaved = true;
+        #}
+      ENDSOURCE
+      SOURCE #show
+        #void show()
+        #{
+        #;
+        #    if (!isDocumentOpen)
+        #    {
+        #        this.open();
+        #    }
+        #    wordDocument.visible(true);
+        #}
+      ENDSOURCE
+      SOURCE #cleanupRTFMarkup
+        #public static str cleanupRTFMarkup(str _content)
+        #{
+        #    #define.RTFTagPattern('\\\\:n+')
+        #    #define.RTFMarkupSymbols(' {}\r\n')
+        #
+        #    TextBuffer textBuffer = new TextBuffer();
+        #    str ret;
+        #;
+        #    textBuffer.setText(_content);
+        #    textBuffer.replace(#RTFTagPattern, '');
+        #    ret = textBuffer.getText();
+        #    ret = strrem(ret, #RTFMarkupSymbols);
+        #    return ret;
+        #}
+      ENDSOURCE
+    ENDMETHODS
+  ENDCLASS
+
+***Element: END

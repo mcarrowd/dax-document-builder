@@ -121,37 +121,17 @@ Formatversion: 1
       SOURCE #findNameBlocks
         #protected container findNameBlocks()
         #{
-        #    container ret;
-        #    int scanPos;
-        #    int len = strlen(templateData), blockNameLen, leftQuoteStart, leftQuoteEnd, rightQuoteStart, rightQuoteEnd;
+        #    container parseResult, ret;
+        #    int i, len, leftQuoteStart, leftQuoteEnd, rightQuoteStart, rightQuoteEnd;
         #    str blockName;
         #;
-        #    do
+        #    parseResult = MToolsDocumentBuilder::parseQuotedTokens(templateData, blockNameLeftQuote, blockNameRightQuote, blockNameMaxLength);
+        #    len = conlen(parseResult);
+        #    for (i = 1; i <= len; i ++)
         #    {
-        #        scanPos ++;
-        #        scanPos = strScan(templateData, blockNameLeftQuote, scanPos, len - scanPos);
-        #        if (scanPos)
-        #        {
-        #            leftQuoteStart = scanPos;
-        #            leftQuoteEnd = leftQuoteStart + strlen(blockNameLeftQuote) - 1;
-        #            scanPos = strScan(templateData, blockNameRightQuote, leftQuoteEnd + 1, len - leftQuoteEnd);
-        #            if (scanPos)
-        #            {
-        #                rightQuoteStart = scanPos;
-        #                rightQuoteEnd = rightQuoteStart + strlen(blockNameRightQuote) - 1;
-        #                if (leftQuoteStart && leftQuoteEnd && rightQuoteStart && rightQuoteEnd)
-        #                {
-        #                    blockNameLen = rightQuoteStart - leftQuoteEnd - 1;
-        #                    if (blockNameLen <= blockNameMaxLength)
-        #                    {
-        #                        blockName = substr(templateData, leftQuoteEnd + 1, blockNameLen);
-        #                        ret += [[leftQuoteStart, rightQuoteEnd, blockName]];
-        #                    }
-        #                }
-        #            }
-        #        }
+        #        [blockName, leftQuoteStart, leftQuoteEnd, rightQuoteStart, rightQuoteEnd] = conpeek(parseResult, i);
+        #        ret += [[leftQuoteStart, rightQuoteEnd, blockName]];
         #    }
-        #    while (scanPos);
         #    return ret;
         #}
       ENDSOURCE
@@ -662,6 +642,43 @@ Formatversion: 1
         #        }
         #    }
         #    return connull();
+        #}
+      ENDSOURCE
+      SOURCE #parseQuotedTokens
+        #public static container parseQuotedTokens(str _content, str _leftQuote, str _rightQuote, int _maxTokenLength = 0)
+        #{
+        #    container ret;
+        #    int scanPos;
+        #    int len = strlen(_content), tokenLen, leftQuoteStart, leftQuoteEnd, rightQuoteStart, rightQuoteEnd;
+        #    str token;
+        #;
+        #    do
+        #    {
+        #        scanPos ++;
+        #        scanPos = strScan(_content, _leftQuote, scanPos, len - scanPos);
+        #        if (scanPos)
+        #        {
+        #            leftQuoteStart = scanPos;
+        #            leftQuoteEnd = leftQuoteStart + strlen(_leftQuote) - 1;
+        #            scanPos = strScan(_content, _rightQuote, leftQuoteEnd + 1, len - leftQuoteEnd);
+        #            if (scanPos)
+        #            {
+        #                rightQuoteStart = scanPos;
+        #                rightQuoteEnd = rightQuoteStart + strlen(_rightQuote) - 1;
+        #                if (leftQuoteStart && leftQuoteEnd && rightQuoteStart && rightQuoteEnd)
+        #                {
+        #                    tokenLen = rightQuoteStart - leftQuoteEnd - 1;
+        #                    if (!_maxTokenLength || (tokenLen <= _maxTokenLength))
+        #                    {
+        #                        token = substr(_content, leftQuoteEnd + 1, tokenLen);
+        #                        ret += [[token, leftQuoteStart, leftQuoteEnd, rightQuoteStart, rightQuoteEnd]];
+        #                    }
+        #                }
+        #            }
+        #        }
+        #    }
+        #    while (scanPos);
+        #    return ret;
         #}
       ENDSOURCE
     ENDMETHODS
