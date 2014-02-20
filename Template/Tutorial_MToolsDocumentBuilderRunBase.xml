@@ -6,9 +6,10 @@
  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <LastPrinted>2014-02-20T16:28:44Z</LastPrinted>
   <Created>2014-02-16T10:46:38Z</Created>
-  <LastSaved>2010-05-13T11:19:53Z</LastSaved>
-  <Version>12.00</Version>
+  <LastSaved>2014-02-20T15:43:32Z</LastSaved>
+  <Version>11.5606</Version>
  </DocumentProperties>
  <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
   <RemovePersonalInformation/>
@@ -31,33 +32,8 @@
    <NumberFormat/>
    <Protection/>
   </Style>
-  <Style ss:ID="s62">
-   <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
-   <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="9"
-    ss:Color="#000000"/>
-   <NumberFormat ss:Format="@"/>
-  </Style>
-  <Style ss:ID="s63">
-   <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
-   <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="9"
-    ss:Color="#000000"/>
-   <NumberFormat ss:Format="@"/>
-  </Style>
-  <Style ss:ID="s65">
-   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
-   <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="14"
-    ss:Color="#FF0000"/>
-   <NumberFormat ss:Format="@"/>
-  </Style>
-  <Style ss:ID="s67">
-   <Alignment ss:Vertical="Bottom"/>
-  </Style>
-  <Style ss:ID="s68">
-   <Alignment ss:Vertical="Bottom"/>
-   <Borders/>
-  </Style>
-  <Style ss:ID="s69">
-   <Alignment ss:Horizontal="Center" ss:Vertical="Top" ss:WrapText="1"/>
+  <Style ss:ID="m22624778">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Center" ss:WrapText="1"/>
    <Borders>
     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
@@ -66,9 +42,81 @@
    </Borders>
    <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="11"
     ss:Color="#000000"/>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="s21">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="9"
+    ss:Color="#000000"/>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="s22">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="9"
+    ss:Color="#000000"/>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="s24">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="16"
+    ss:Color="#FF0000"/>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="s25">
+   <Alignment ss:Vertical="Bottom"/>
+  </Style>
+  <Style ss:ID="s27">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+  </Style>
+  <Style ss:ID="s28">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Top" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="14"
+    ss:Color="#000000"/>
    <NumberFormat ss:Format="#,##0.00_р_."/>
   </Style>
-  <Style ss:ID="s70">
+  <Style ss:ID="s30">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="11"
+    ss:Color="#000000" ss:Bold="1"/>
+   <NumberFormat/>
+  </Style>
+  <Style ss:ID="s31">
+   <Alignment ss:Vertical="Center" ss:ShrinkToFit="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font ss:FontName="Calibri" x:CharSet="204" ss:Size="11" ss:Color="#000000"
+    ss:Bold="1"/>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="s32">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font ss:FontName="Calibri" x:CharSet="204" ss:Size="11" ss:Color="#000000"
+    ss:Bold="1"/>
+   <NumberFormat ss:Format="[=367]&quot;none&quot;;dd/mm/yyyy"/>
+  </Style>
+  <Style ss:ID="s33">
    <Alignment ss:Horizontal="Left" ss:Vertical="Center"/>
    <Borders>
     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
@@ -80,29 +128,7 @@
     ss:Color="#000000" ss:Bold="1"/>
    <NumberFormat ss:Format="@"/>
   </Style>
-  <Style ss:ID="s71">
-   <Alignment ss:Vertical="Center" ss:WrapText="1"/>
-   <Borders>
-    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
-    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
-   </Borders>
-   <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="11"
-    ss:Color="#000000"/>
-   <NumberFormat ss:Format="@"/>
-  </Style>
-  <Style ss:ID="s72">
-   <Alignment ss:Vertical="Center"/>
-   <Borders>
-    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
-    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
-    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
-   </Borders>
-   <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="11"
-    ss:Color="#000000"/>
-   <NumberFormat ss:Format="@"/>
-  </Style>
-  <Style ss:ID="s73">
+  <Style ss:ID="s40">
    <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
    <Borders>
     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
@@ -114,19 +140,7 @@
     ss:Color="#000000"/>
    <NumberFormat ss:Format="@"/>
   </Style>
-  <Style ss:ID="s75">
-   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
-   <Borders>
-    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
-    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
-    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
-   </Borders>
-   <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="11"
-    ss:Color="#000000"/>
-   <NumberFormat ss:Format="Short Date"/>
-  </Style>
-  <Style ss:ID="s76">
+  <Style ss:ID="s41">
    <Alignment ss:Horizontal="Right" ss:Vertical="Center"/>
    <Borders>
     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
@@ -138,7 +152,7 @@
     ss:Color="#000000" ss:Bold="1"/>
    <NumberFormat ss:Format="@"/>
   </Style>
-  <Style ss:ID="s77">
+  <Style ss:ID="s42">
    <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
    <Borders>
     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
@@ -149,18 +163,6 @@
    <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="11"
     ss:Color="#000000" ss:Bold="1"/>
    <NumberFormat/>
-  </Style>
-  <Style ss:ID="s78">
-   <Alignment ss:Horizontal="Left" ss:Vertical="Center" ss:WrapText="1"/>
-   <Borders>
-    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
-    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
-    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
-   </Borders>
-   <Font ss:FontName="Calibri" x:CharSet="204" x:Family="Swiss" ss:Size="11"
-    ss:Color="#000000"/>
-   <NumberFormat ss:Format="@"/>
   </Style>
  </Styles>
  <Names>
@@ -173,60 +175,71 @@
   <Names>
    <NamedRange ss:Name="Print_Titles" ss:RefersTo="=Отчёт!R4"/>
   </Names>
-  <Table ss:ExpandedColumnCount="3" x:FullColumns="1"
-   x:FullRows="1" ss:DefaultColumnWidth="54" ss:DefaultRowHeight="15">
-   <Column ss:StyleID="s62" ss:AutoFitWidth="0" ss:Width="35.25"/>
-   <Column ss:StyleID="s63" ss:AutoFitWidth="0" ss:Width="258"/>
+  <Table ss:ExpandedColumnCount="4" ss:ExpandedRowCount="10" x:FullColumns="1"
+   x:FullRows="1" ss:DefaultColumnWidth="54" ss:DefaultRowHeight="14.25">
+   <Column ss:Hidden="1" ss:AutoFitWidth="0" ss:Width="21.75"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="35.25"/>
+   <Column ss:StyleID="s22" ss:AutoFitWidth="0" ss:Width="293.25"/>
    <Column ss:AutoFitWidth="0" ss:Width="93.75"/>
-   <Row ss:AutoFitHeight="0"/>
-   <Row ss:AutoFitHeight="0" ss:Height="24.75">
-    <Cell ss:MergeAcross="2" ss:StyleID="s65"><Data ss:Type="String">Название отчёта</Data></Cell>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">.</Data></Cell>
    </Row>
-   <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:StyleID="s67">
-    <Cell ss:StyleID="s68"/>
-    <Cell ss:StyleID="s68"/>
+   <Row ss:AutoFitHeight="0" ss:Height="20.25">
+    <Cell ss:Index="2" ss:MergeAcross="2" ss:StyleID="s24"><Data ss:Type="String">Report header</Data></Cell>
    </Row>
-   <Row ss:AutoFitHeight="0" ss:Height="24">
-    <Cell ss:StyleID="s69"><Data ss:Type="String">№</Data><NamedCell
+   <Row ss:AutoFitHeight="0" ss:StyleID="s25">
+    <Cell ss:Index="2" ss:StyleID="s27"/>
+    <Cell ss:StyleID="s27"/>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="18">
+    <Cell ss:Index="2" ss:StyleID="s28"><Data ss:Type="String">No</Data><NamedCell
       ss:Name="Print_Titles"/></Cell>
-    <Cell ss:StyleID="s69"><Data ss:Type="String">Наименование</Data><NamedCell
+    <Cell ss:StyleID="s28"><Data ss:Type="String">User name</Data><NamedCell
       ss:Name="Print_Titles"/></Cell>
-    <Cell ss:StyleID="s69"><Data ss:Type="String">Данные</Data><NamedCell
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Last login</Data><NamedCell
       ss:Name="Print_Titles"/></Cell>
    </Row>
-<!---->
-   <Row ss:AutoFitHeight="0" ss:Height="31.5">
-    <Cell ss:StyleID="s70"><Data ss:Type="String">1.2.3</Data></Cell>
-    <Cell ss:StyleID="s71"><Data ss:Type="String">Подразделение</Data></Cell>
-    <Cell ss:StyleID="s72"/>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="2" ss:StyleID="Default"/>
+    <Cell ss:StyleID="Default"><Data ss:Type="String">#!User!#</Data></Cell>
    </Row>
-<!---->
-   <Row ss:AutoFitHeight="0" ss:Height="39.75">
-    <Cell ss:StyleID="s73"/>
-    <Cell ss:StyleID="s78"><Data ss:Type="String">Сотрудник</Data></Cell>
-    <Cell ss:StyleID="s75"><Data ss:Type="DateTime">2000-01-01T00:00:00.000</Data></Cell>
+   <Row ss:AutoFitHeight="0" ss:Height="15">
+    <Cell ss:Index="2" ss:StyleID="s30"><Data ss:Type="Number">123</Data></Cell>
+    <Cell ss:StyleID="s31"><Data ss:Type="String">Username</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="DateTime">1988-01-01T00:00:00.000</Data></Cell>
    </Row>
-<!---->
-   <Row ss:AutoFitHeight="0" ss:Height="36">
-    <Cell ss:StyleID="s73"/>
-    <Cell ss:StyleID="s76"><Data ss:Type="String">Итог</Data></Cell>
-    <Cell ss:StyleID="s77"><Data ss:Type="Number">12345</Data></Cell>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="2" ss:StyleID="Default"/>
+    <Cell ss:StyleID="Default"><Data ss:Type="String">#!Group!#</Data></Cell>
    </Row>
-<!---->
+   <Row ss:AutoFitHeight="0" ss:Height="15">
+    <Cell ss:Index="2" ss:StyleID="s33"/>
+    <Cell ss:MergeAcross="1" ss:StyleID="m22624778"><Data ss:Type="String">Group</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:Index="2" ss:StyleID="Default"/>
+    <Cell ss:StyleID="Default"><Data ss:Type="String">#!Footer!#</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="15">
+    <Cell ss:Index="2" ss:StyleID="s40"/>
+    <Cell ss:StyleID="s41"><Data ss:Type="String">Total count</Data></Cell>
+    <Cell ss:StyleID="s42"><Data ss:Type="Number">123</Data></Cell>
+   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <PageSetup>
     <Layout x:CenterHorizontal="1"/>
-    <Header x:Margin="0.31496062992125984"/>
-    <Footer x:Margin="0.31496062992125984"/>
-    <PageMargins x:Bottom="0.74803149606299213" x:Left="0.70866141732283472"
-     x:Right="0.70866141732283472" x:Top="0.74803149606299213"/>
+    <Header x:Margin="0.19685039370078741"/>
+    <Footer x:Margin="0.19685039370078741"/>
+    <PageMargins x:Bottom="0.39370078740157483" x:Left="0.78740157480314965"
+     x:Right="0.19685039370078741" x:Top="0.39370078740157483"/>
    </PageSetup>
    <Unsynced/>
+   <FitToPage/>
    <Print>
+    <FitHeight>9999</FitHeight>
     <ValidPrinterInfo/>
     <PaperSizeIndex>9</PaperSizeIndex>
-    <Scale>88</Scale>
     <HorizontalResolution>600</HorizontalResolution>
     <VerticalResolution>600</VerticalResolution>
    </Print>

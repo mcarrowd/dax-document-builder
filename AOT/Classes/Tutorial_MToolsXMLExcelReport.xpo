@@ -20,53 +20,89 @@ Formatversion: 1
       SOURCE #classDeclaration
         #class Tutorial_MToolsXMLExcelReport extends MToolsXMLExcelRunBase
         #{
-        #    DialogField             fieldReportDate;
-        #    OnDate                  reportDate;
+        #    DialogField             fieldUserGroupId;
+        #    UserGroupId             userGroupId;
+        #
+        #    int userCount;
         #
         #    #define.CurrentVersion(1)
         #    #localmacro.CurrentList
-        #        reportDate
+        #        userGroupId
         #    #endmacro
         #}
       ENDSOURCE
       SOURCE #dialog
         #public Object dialog()
         #{
-        #    DialogRunBase               dialog = super();
+        #    DialogRunBase dialog = super();
         #;
-        #    dialog.addGroup("Параметры отчёта");
-        #    fieldReportDate = dialog.addFieldValue(typeid(OnDate), reportDate);
+        #    fieldUserGroupId = dialog.addFieldValue(typeid(UserGroupId), userGroupId);
         #    return dialog;
         #}
       ENDSOURCE
       SOURCE #fillBody
         #protected void fillBody()
         #{
-        #    EmplTable emplTable;
-        #    int i;
+        #    UserInfo userInfo;
+        #    SysUserLog userLog;
+        #    UserGroupList userGroupList;
+        #    UserGroupInfo userGroupInfo;
         #;
         #    super();
-        #    this.progressInit("Формирование отчёта", 4, #AviTransfer);
-        #    while select emplTable
+        #    while select userInfo order by name
         #    {
-        #        i++; if (i==1000) break;
-        #        excelReport.insertBlock(1, ['Подразделение'], [strfmt('%1 - %2', emplTable.PayHRMOrganizationId_RU, RPayHRMOrganization::find(emplTable.PayHRMOrganizationId_RU).description)]);
-        #        excelReport.insertBlock(2, ['Сотрудник', 01\01\2000], [emplTable.Name, emplTable.BirthDate]);
-        #        progress.setText(strfmt('запись %1..', i));
+        #        if (userGroupId)
+        #        {
+        #            select firstonly userGroupList
+        #                where userGroupList.UserId == userInfo.id
+        #                   && userGroupList.groupId == userGroupId;
+        #            if (!userGroupList)
+        #            {
+        #                continue;
+        #            }
+        #        }
+        #        userCount ++;
+        #        select maxof(CreatedDate) from userLog
+        #            where userLog.UserId == userInfo.Id &&
+        #                  userLog.Type   == SysLogType::Login;
+        #        excelReport.insertBlockByName('User',
+        #            [123, 'Username', 01\01\1988],
+        #            [userCount, strfmt('%1 - %2', userInfo.id, userInfo.name), userLog.createdDate]);
+        #        while select userGroupList
+        #            where userGroupList.UserId == userInfo.id
+        #        join userGroupInfo order by name
+        #            where userGroupInfo.id == userGroupList.groupId
+        #        {
+        #            excelReport.insertBlockByName('Group',
+        #                ['Group'],
+        #                [strfmt('%1 - %2', userGroupInfo.id, userGroupInfo.name)]);
+        #        }
         #    }
-        #    excelReport.insertBlock(3, [12345], [i]);
+        #}
+      ENDSOURCE
+      SOURCE #fillFoooter
+        #protected void fillFoooter()
+        #{
+        #    super();
+        #    excelReport.insertBlockByName('Footer', [123], [userCount]);
+        #}
+      ENDSOURCE
+      SOURCE #fillHeader
+        #protected void fillHeader()
+        #{
+        #    super();
+        #    excelReport.insertBlock(0, ['Report header'], [Tutorial_MToolsXMLExcelReport::description()]);
         #}
       ENDSOURCE
       SOURCE #getFromDialog
         #public boolean getFromDialog()
         #{
-        #    boolean ret = super();
+        #    boolean ret;
         #;
-        #    if(ret)
+        #    ret = super();
+        #    if (ret)
         #    {
-        #        reportDate= dateStartMth(fieldReportDate.value());
-        #        if(reportDate==Datenull())
-        #            throw error ("Не указан период построения отчета.");
+        #        userGroupId = fieldUserGroupId.value();
         #    }
         #    return ret;
         #}
@@ -77,13 +113,30 @@ Formatversion: 1
         #    return[#CurrentVersion, #CurrentList];
         #}
       ENDSOURCE
+      SOURCE #prepare
+        #protected void prepare()
+        #{
+        #;
+        #    excelReport.parmBlockNameLeftQuote('#!');
+        #    excelReport.parmBlockNameRightQuote('!#');
+        #    excelReport.parmExpandNameBlocksToRowElement(true);
+        #    super();
+        #}
+      ENDSOURCE
+      SOURCE #reportTemplateName
+        #protected str reportTemplateName()
+        #{
+        #    return 'Tutorial_MToolsDocumentBuilderRunBase.xml';
+        #}
+      ENDSOURCE
       SOURCE #unpack
         #public boolean unpack(container packedClass)
         #{
         #    container   base;
         #    boolean     ret;
         #    integer     version = conPeek(packedClass, 1);
-        #    switch (version){
+        #    switch (version)
+        #    {
         #        case #CurrentVersion:
         #            [version, #CurrentList, base] = packedClass;
         #            ret = true;
@@ -97,17 +150,17 @@ Formatversion: 1
       SOURCE #description
         #client server static ClassDescription description()
         #{
-        #    return "Тест вывода в Excel через XML";
+        #    return "@SYS27348";
         #}
       ENDSOURCE
       SOURCE #main
         #public static void main(Args _args)
         #{
-        #    Tutorial_MToolsXMLExcelReport Tutorial_MToolsXMLExcelReport = new Tutorial_MToolsXMLExcelReport();
+        #    Tutorial_MToolsXMLExcelReport report = new Tutorial_MToolsXMLExcelReport();
         #;
-        #    if (Tutorial_MToolsXMLExcelReport.prompt())
+        #    if (report.prompt())
         #    {
-        #        Tutorial_MToolsXMLExcelReport.run();
+        #        report.run();
         #    }
         #}
       ENDSOURCE
