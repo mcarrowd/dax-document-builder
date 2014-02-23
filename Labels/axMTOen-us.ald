@@ -1,1 +1,11 @@
-﻿
+﻿@MTO1000 Document file extension '%1' does not match the required ('%2')
+@MTO1001 Attempt to insert zero block more then one time
+@MTO1002 Attempt to insert block after document completion
+@MTO1003 Block does not exist
+@MTO1004 '%1' block does not found in the document template
+@MTO1005 Unable to load the document template
+@MTO1006 Unable to create the document
+@MTO1007 Unable to parse the document template
+@MTO1008 The document template should consist more than two blocks
+@MTO1009 Unable to remove temporary file '%1'
+@MTO1010 Format '%1' is not supported

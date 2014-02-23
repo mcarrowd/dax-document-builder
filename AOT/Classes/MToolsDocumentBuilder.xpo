@@ -36,11 +36,11 @@ Formatversion: 1
         #    fileExtention = conpeek(filenamesplit(target), 3);
         #    if (strupr(fileExtention) != strupr(documentFileExtension))
         #    {
-        #        return checkfailed(strfmt("Расширение файла документа '%1' не соответствует требуемому ('%2')", fileExtention, documentFileExtension));
+        #        return checkfailed(strfmt("@MTO1000", fileExtention, documentFileExtension));
         #    }
         #    if (WinApi::fileExists(target))
         #    {
-        #        return checkfailed(strfmt("Файл '%1' уже существует", target));
+        #        return checkfailed(strfmt("@SYS18625", target));
         #    }
         #    return true;
         #}
@@ -209,7 +209,7 @@ Formatversion: 1
         #    }
         #    if (!res)
         #    {
-        #        throw error(strfmt("Каталог '%1' не существует", tempDir));
+        #        throw error(strfmt("@SYS72247", tempDir));
         #    }
         #    return tempDir;
         #}
@@ -250,7 +250,7 @@ Formatversion: 1
         #    CodeAccessPermission::revertAssert();
         #    if (!streamWriter)
         #    {
-        #        return checkfailed(strfmt("Невозможно открыть файл '%1' для записи", target));
+        #        return checkfailed(strfmt("@SYS76826", target));
         #    }
         #    return true;
         #}
@@ -272,7 +272,7 @@ Formatversion: 1
         #    {
         #        if (_blockNum == 0 && !isDocumentEmpty)
         #        {
-        #            throw error("Попытка вывода нулевого блока несколько раз");
+        #            throw error("@MTO1001");
         #        }
         #        if (_blockNum > 0 && isDocumentEmpty)
         #        {
@@ -281,7 +281,7 @@ Formatversion: 1
         #        }
         #        if(_blockNum == lastBlock && isDocumentReady)
         #        {
-        #            throw error("Попытка вывода после завершения построения документа");
+        #            throw error("@MTO1002");
         #        }
         #        block = templateBlocks.lookup(_blockNum);
         #        for(i = 1; i <= len; i++)
@@ -299,7 +299,7 @@ Formatversion: 1
         #    }
         #    else
         #    {
-        #        throw error("Заданного блока не существует");
+        #        throw error("@MTO1003");
         #    }
         #}
       ENDSOURCE
@@ -314,7 +314,7 @@ Formatversion: 1
         #    }
         #    if (!templateBlockNames.exists(_blockName))
         #    {
-        #        throw error(strfmt("Блок '%1' не найден в шаблоне документа", _blockName));
+        #        throw error(strfmt("@MTO1004", _blockName));
         #    }
         #    blockNum = templateBlockNames.lookup(_blockName);
         #    this.insertBlock(blockNum, _placeHolders, _data);
@@ -417,11 +417,11 @@ Formatversion: 1
         #;
         #    if (!this.checkTemplateFile())
         #    {
-        #        throw error("Невозможно загрузить шаблон документа");
+        #        throw error("@MTO1005");
         #    }
         #    if (!this.checkTargetFile())
         #    {
-        #        throw error("Невозможно создать файл документа");
+        #        throw error("@MTO1006");
         #    }
         #    if (isDocumentTemporary)
         #    {
@@ -429,11 +429,11 @@ Formatversion: 1
         #    }
         #    if (!this.initTargetFile())
         #    {
-        #        throw error("Невозможно создать файл документа");
+        #        throw error("@MTO1006");
         #    }
         #    if (!this.readTemplate())
         #    {
-        #        throw error("Невозможно разобрать шаблон документа");
+        #        throw error("@MTO1007");
         #    }
         #    isDocumentPrepared = true;
         #}
@@ -468,7 +468,7 @@ Formatversion: 1
         #
         #    if (templateBlocks.elements() <= 2)
         #    {
-        #        return checkfailed("В шаблоне документа должно быть более двух блоков");
+        #        return checkfailed("@MTO1008");
         #    }
         #    return true;
         #}
@@ -583,7 +583,7 @@ Formatversion: 1
         #            res = WinApi::deleteFile(_file);
         #            if (res)
         #            {
-        #                warning(strfmt("Не удаётся удалить временный файл '%1'", _file));
+        #                warning(strfmt("@MTO1009", _file));
         #            }
         #        }
         #    }
@@ -620,7 +620,7 @@ Formatversion: 1
         #            ret = new MToolsDocumentBuilder_RTF(_template, _target);
         #            break;
         #        default:
-        #            throw error(strfmt("Формат %1 не поддерживается", _documentFormat));
+        #            throw error(strfmt("@MTO1010", _documentFormat));
         #    }
         #    return ret;
         #}
