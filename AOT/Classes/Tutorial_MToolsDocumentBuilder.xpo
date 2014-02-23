@@ -3,30 +3,34 @@ Formatversion: 1
 
 ***Element: CLS
 
-; Microsoft Dynamics Class: Tutorial_MToolsXMLExcelReport выгружен
+; Microsoft Dynamics Class: Tutorial_MToolsDocumentBuilder выгружен
 ; --------------------------------------------------------------------------------
   CLSVERSION 1
   
-  CLASS #Tutorial_MToolsXMLExcelReport
-    Id 51798
+  CLASS #Tutorial_MToolsDocumentBuilder
+    Id 52046
     PROPERTIES
-      Name                #Tutorial_MToolsXMLExcelReport
-      Extends             #MToolsXMLExcelRunBase
+      Name                #Tutorial_MToolsDocumentBuilder
+      Extends             #MToolsDocumentBuilderRunBase
       RunOn               #Called from
     ENDPROPERTIES
     
     METHODS
       Version: 3
       SOURCE #classDeclaration
-        #class Tutorial_MToolsXMLExcelReport extends MToolsXMLExcelRunBase
+        #class Tutorial_MToolsDocumentBuilder extends MToolsDocumentBuilderRunBase
         #{
+        #    DialogField             fieldDocumentFormat;
         #    DialogField             fieldUserGroupId;
+        #
+        #    MToolsDocumentFormat    documentFormat;
         #    UserGroupId             userGroupId;
         #
         #    int userCount;
         #
         #    #define.CurrentVersion(1)
         #    #localmacro.CurrentList
+        #        documentFormat,
         #        userGroupId
         #    #endmacro
         #}
@@ -36,8 +40,34 @@ Formatversion: 1
         #{
         #    DialogRunBase dialog = super();
         #;
+        #    fieldDocumentFormat = dialog.addFieldValue(typeid(MToolsDocumentFormat), documentFormat);
         #    fieldUserGroupId = dialog.addFieldValue(typeid(UserGroupId), userGroupId);
         #    return dialog;
+        #}
+      ENDSOURCE
+      SOURCE #documentFormat
+        #protected MToolsDocumentFormat documentFormat()
+        #{
+        #    return documentFormat;
+        #}
+      ENDSOURCE
+      SOURCE #documentTemplateName
+        #protected str documentTemplateName()
+        #{
+        #    str ret;
+        #;
+        #    switch (documentFormat)
+        #    {
+        #        case MToolsDocumentFormat::XMLSS:
+        #            ret = 'Tutorial_MToolsDocumentBuilderRunBase.xml';
+        #            break;
+        #        case MToolsDocumentFormat::RTF:
+        #            ret = 'Tutorial_MToolsDocumentBuilderRunBase.rtf';
+        #            break;
+        #        default:
+        #            throw error(strfmt("Формат документа %1 не поддерживается", documentFormat));
+        #    }
+        #    return ret;
         #}
       ENDSOURCE
       SOURCE #fillBody
@@ -65,7 +95,7 @@ Formatversion: 1
         #        select maxof(CreatedDate) from userLog
         #            where userLog.UserId == userInfo.Id &&
         #                  userLog.Type   == SysLogType::Login;
-        #        excelReport.insertBlockByName('User',
+        #        documentBuilder.insertBlockByName('User',
         #            [123, 'Username', 01\01\1988],
         #            [userCount, strfmt('%1 - %2', userInfo.id, userInfo.name), userLog.createdDate]);
         #        while select userGroupList
@@ -73,7 +103,7 @@ Formatversion: 1
         #        join userGroupInfo order by name
         #            where userGroupInfo.id == userGroupList.groupId
         #        {
-        #            excelReport.insertBlockByName('Group',
+        #            documentBuilder.insertBlockByName('Group',
         #                ['Group'],
         #                [strfmt('%1 - %2', userGroupInfo.id, userGroupInfo.name)]);
         #        }
@@ -84,14 +114,14 @@ Formatversion: 1
         #protected void fillFoooter()
         #{
         #    super();
-        #    excelReport.insertBlockByName('Footer', [123], [userCount]);
+        #    documentBuilder.insertBlockByName('Footer', [123], [userCount]);
         #}
       ENDSOURCE
       SOURCE #fillHeader
         #protected void fillHeader()
         #{
         #    super();
-        #    excelReport.insertBlock(0, ['Report header'], [Tutorial_MToolsXMLExcelReport::description()]);
+        #    documentBuilder.insertBlock(0, ['ReportHeader'], [Tutorial_MToolsDocumentBuilder::description()]);
         #}
       ENDSOURCE
       SOURCE #getFromDialog
@@ -102,6 +132,7 @@ Formatversion: 1
         #    ret = super();
         #    if (ret)
         #    {
+        #        documentFormat = fieldDocumentFormat.value();
         #        userGroupId = fieldUserGroupId.value();
         #    }
         #    return ret;
@@ -116,17 +147,16 @@ Formatversion: 1
       SOURCE #prepare
         #protected void prepare()
         #{
+        #    MToolsDocumentBuilder_XMLSS mtoolsDocumentBuilder_XMLSS;
         #;
-        #    excelReport.parmBlockNameLeftQuote('#!');
-        #    excelReport.parmBlockNameRightQuote('!#');
-        #    excelReport.parmExpandNameBlocksToRowElement(true);
+        #    if (documentFormat == MToolsDocumentFormat::XMLSS)
+        #    {
+        #        mtoolsDocumentBuilder_XMLSS = documentBuilder;
+        #        mtoolsDocumentBuilder_XMLSS.parmBlockNameLeftQuote('#!');
+        #        mtoolsDocumentBuilder_XMLSS.parmBlockNameRightQuote('!#');
+        #        mtoolsDocumentBuilder_XMLSS.parmExpandNameBlocksToRowElement(true);
+        #    }
         #    super();
-        #}
-      ENDSOURCE
-      SOURCE #reportTemplateName
-        #protected str reportTemplateName()
-        #{
-        #    return 'Tutorial_MToolsDocumentBuilderRunBase.xml';
         #}
       ENDSOURCE
       SOURCE #unpack
@@ -156,7 +186,7 @@ Formatversion: 1
       SOURCE #main
         #public static void main(Args _args)
         #{
-        #    Tutorial_MToolsXMLExcelReport report = new Tutorial_MToolsXMLExcelReport();
+        #    Tutorial_MToolsDocumentBuilder report = new Tutorial_MToolsDocumentBuilder();
         #;
         #    if (report.prompt())
         #    {
