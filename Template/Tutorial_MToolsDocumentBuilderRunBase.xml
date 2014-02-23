@@ -32,7 +32,7 @@
    <NumberFormat/>
    <Protection/>
   </Style>
-  <Style ss:ID="m22624778">
+  <Style ss:ID="m22624790">
    <Alignment ss:Horizontal="Left" ss:Vertical="Center" ss:WrapText="1"/>
    <Borders>
     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
@@ -185,7 +185,7 @@
     <Cell><Data ss:Type="String">.</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="20.25">
-    <Cell ss:Index="2" ss:MergeAcross="2" ss:StyleID="s24"><Data ss:Type="String">Report header</Data></Cell>
+    <Cell ss:Index="2" ss:MergeAcross="2" ss:StyleID="s24"><Data ss:Type="String">ReportHeader</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:StyleID="s25">
     <Cell ss:Index="2" ss:StyleID="s27"/>
@@ -214,7 +214,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="15">
     <Cell ss:Index="2" ss:StyleID="s33"/>
-    <Cell ss:MergeAcross="1" ss:StyleID="m22624778"><Data ss:Type="String">Group</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="m22624790"><Data ss:Type="String">Group</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:Index="2" ss:StyleID="Default"/>
