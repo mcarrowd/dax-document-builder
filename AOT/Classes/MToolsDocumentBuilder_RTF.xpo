@@ -228,6 +228,12 @@ Formatversion: 1
         #    return placeholderRightQuote;
         #}
       ENDSOURCE
+      SOURCE #prepareDataItem
+        #protected str prepareDataItem(anytype _dataItem)
+        #{
+        #    return strfmt('%1', _dataItem);
+        #}
+      ENDSOURCE
       SOURCE #preparePlaceHolder
         #protected str preparePlaceHolder(anytype _placeHolder)
         #{
