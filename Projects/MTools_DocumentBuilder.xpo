@@ -3,14 +3,14 @@ Formatversion: 1
 
 ***Element: PRN
 
-; Microsoft Business Solutions-Axapta Project : MTools_XMLExcelReport unloaded at 2014.02.23
+; Microsoft Business Solutions-Axapta Project : MTools_DocumentBuilder unloaded at 2014.02.23
 ; --------------------------------------------------------------------------------
   PROJECTVERSION 2
 
-  PROJECT #MTools_XMLExcelReport
+  PROJECT #MTools_DocumentBuilder
    SHARED
   PROPERTIES
-    Name                #MTools_XMLExcelReport
+    Name                #MTools_DocumentBuilder
   ENDPROPERTIES
 
 GROUP #Macros
