@@ -85,6 +85,7 @@ Formatversion: 1
       SOURCE #defaultEncoding
         #public CLRObject defaultEncoding()
         #{
+        #    //BP deviation documented
         #    return new System.Text.UTF8Encoding(true);
         #}
       ENDSOURCE
