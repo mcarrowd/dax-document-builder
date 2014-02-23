@@ -1,0 +1,114 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: CLS
+
+; Microsoft Dynamics Class: MToolsDocumentBuilderRunBase выгружен
+; --------------------------------------------------------------------------------
+  CLSVERSION 1
+  
+  CLASS #MToolsDocumentBuilderRunBase
+    Id 52045
+    PROPERTIES
+      Name                #MToolsDocumentBuilderRunBase
+      Extends             #RunBaseBatch
+      RunOn               #Called from
+    ENDPROPERTIES
+    
+    METHODS
+      Version: 3
+      SOURCE #checkDocument
+        #protected boolean checkDocument()
+        #{
+        #;
+        #    if (!WinAPI::fileExists(this.fullTemplateName()))
+        #    {
+        #        return checkFailed(strfmt("@SYS60367", this.fullTemplateName()));
+        #    }
+        #    return true;
+        #}
+      ENDSOURCE
+      SOURCE #classDeclaration
+        #abstract class MToolsDocumentBuilderRunBase extends RunBaseBatch
+        #{
+        #    MToolsDocumentBuilder documentBuilder;
+        #}
+      ENDSOURCE
+      SOURCE #complete
+        #protected void complete()
+        #{
+        #;
+        #    documentBuilder.save();
+        #    documentBuilder.show();
+        #}
+      ENDSOURCE
+      SOURCE #documentFormat
+        #abstract protected MToolsDocumentFormat documentFormat()
+        #{
+        #}
+      ENDSOURCE
+      SOURCE #documentTemplateName
+        #abstract protected str documentTemplateName()
+        #{
+        #}
+      ENDSOURCE
+      SOURCE #fillBody
+        #protected void fillBody()
+        #{
+        #;
+        #}
+      ENDSOURCE
+      SOURCE #fillFoooter
+        #protected void fillFoooter()
+        #{
+        #;
+        #}
+      ENDSOURCE
+      SOURCE #fillHeader
+        #protected void fillHeader()
+        #{
+        #;
+        #}
+      ENDSOURCE
+      SOURCE #fullTemplateName
+        #protected str fullTemplateName()
+        #{
+        #    return strfmt('%2%1', this.documentTemplateName(), templateFolder_W());
+        #}
+      ENDSOURCE
+      SOURCE #makeDocument
+        #protected boolean makeDocument()
+        #{
+        #;
+        #    documentBuilder = MToolsDocumentBuilder::construct(this.documentFormat(), this.fullTemplateName());
+        #    if (!documentBuilder)
+        #    {
+        #        return checkfailed("Ошибка подготовки документа.");
+        #    }
+        #    return true;
+        #}
+      ENDSOURCE
+      SOURCE #prepare
+        #protected void prepare()
+        #{
+        #;
+        #}
+      ENDSOURCE
+      SOURCE #run
+        #public void run()
+        #{
+        #;
+        #    if (this.checkDocument() && this.makeDocument())
+        #    {
+        #        this.prepare();
+        #        this.fillHeader();
+        #        this.fillBody();
+        #        this.fillFoooter();
+        #        this.complete();
+        #    }
+        #}
+      ENDSOURCE
+    ENDMETHODS
+  ENDCLASS
+
+***Element: END
