@@ -61,13 +61,13 @@ Formatversion: 1
       SOURCE #defaultBlockNameLeftQuote
         #public str defaultBlockNameLeftQuote()
         #{
-        #    return "<!--";
+        #    return '<!--';
         #}
       ENDSOURCE
       SOURCE #defaultBlockNameRightQuote
         #public str defaultBlockNameRightQuote()
         #{
-        #    return "-->";
+        #    return '-->';
         #}
       ENDSOURCE
       SOURCE #defaultDataTypecast
@@ -227,7 +227,7 @@ Formatversion: 1
         #    }
         #    else
         #    {
-        #        throw warning("Возникла одна или несколько ошибок при открытии документа в Excel.");
+        #        throw warning("@MTO1011");
         #    }
         #}
       ENDSOURCE
@@ -461,7 +461,7 @@ Formatversion: 1
         #                pageSetup.RightFooter(text);
         #                break;
         #            default:
-        #                throw error("Некорректное использование метода");
+        #                throw error(Error::wrongUseOfFunction(funcname()));
         #        }
         #    }
         #}
@@ -492,7 +492,7 @@ Formatversion: 1
         #        //BP deviation documented
         #        pageSetup.LeftHeader(companyInfo.Name);
         #        //BP deviation documented
-        #        pageSetup.RightFooter("Подготовлено с использованием системы Microsoft Dynamics AX");
+        #        pageSetup.RightFooter("@MTO1012");
         #    }
         #}
       ENDSOURCE
@@ -516,15 +516,15 @@ Formatversion: 1
         #    ver = app.version();
         #    if (ver like '12*')
         #    {
-        #        text = @'Страница &P из &N';
+        #        text = strfmt("@MTO1013", '&P', '&N');
         #    }
         #    else if (ver like '11*')
         #    {
-        #        text = @'Страница &С из &К';
+        #        text = strfmt("@MTO1013", '&С', '&К');
         #    }
         #    else
         #    {
-        #        text = strfmt("Версия Excel не поддерживается (%2)", ver);
+        #        text = strfmt("@MTO1014", ver);
         #    }
         #    for (i = 1; i <= excelDocument.getWorkSheetsCount(); i++)
         #    {
@@ -550,7 +550,7 @@ Formatversion: 1
         #                pageSetup.RightFooter(text);
         #                break;
         #            default:
-        #                throw error("Некорректное использование метода");
+        #                throw error(Error::wrongUseOfFunction(funcname()));
         #        }
         #    }
         #}
@@ -635,7 +635,7 @@ Formatversion: 1
         #            ret = enum2str(_data);
         #            break;
         #        default:
-        #            throw error("Неподдерживаемый тип данных.");
+        #            throw error(strfmt("@MTO1015", typeof(_data)));
         #    }
         #    return ret;
         #}
@@ -681,11 +681,11 @@ Formatversion: 1
         #    {
         #        if (_verbose)
         #        {
-        #            warning("Программный доступ к объектной модели VBA не разрешён.");
+        #            warning("@MTO1016");
         #        }
         #        if (_verbose && _showHelp)
         #        {
-        #            info("Следуйте инструкции по настройке доступа, указанной в открывшемся окне браузера.");
+        #            info("@MTO1017");
         #            WinApi::shellExecute(templatefolder_w() + #helpFileName);
         #        }
         #    }

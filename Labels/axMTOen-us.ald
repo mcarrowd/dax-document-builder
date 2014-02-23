@@ -9,3 +9,10 @@
 @MTO1008 The document template should consist more than two blocks
 @MTO1009 Unable to remove temporary file '%1'
 @MTO1010 Format '%1' is not supported
+@MTO1011 There was one or more errors when opening the document in Excel
+@MTO1012 Prepared using Microsoft Dynamics AX
+@MTO1013 Page %1 of %2
+@MTO1014 Excel version is not supported (%1)
+@MTO1015 Data Type '%1' is not supported
+@MTO1016 Programmatic access to Office VBA project is denied
+@MTO1017 To configure access follow the instructions specified in browser
