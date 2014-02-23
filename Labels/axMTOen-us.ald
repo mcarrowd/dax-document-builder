@@ -16,3 +16,12 @@
 @MTO1015 Data Type '%1' is not supported
 @MTO1016 Programmatic access to Office VBA project is denied
 @MTO1017 To configure access follow the instructions specified in browser
+@MTO1018 There was one or more errors when opening the document in Word
+@MTO1019 Document preparation failed
+@MTO1020 Document type
+@MTO1021 XMLSS
+@MTO1022 Left header
+@MTO1023 Right header
+@MTO1024 Left footer
+@MTO1025 Right footer
+@MTO1026 Header or footer type

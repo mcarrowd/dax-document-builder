@@ -83,7 +83,7 @@ Formatversion: 1
         #    documentBuilder = MToolsDocumentBuilder::construct(this.documentFormat(), this.fullTemplateName());
         #    if (!documentBuilder)
         #    {
-        #        return checkfailed("Ошибка подготовки документа.");
+        #        return checkfailed("@MTO1019");
         #    }
         #    return true;
         #}
