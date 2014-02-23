@@ -56,7 +56,7 @@ Formatversion: 1
       SOURCE #reportTemplateName
         #protected str reportTemplateName()
         #{
-        #    return "MToolsXMLExcelReport.xml";
+        #    return 'MToolsXMLExcelReport.xml';
         #}
       ENDSOURCE
     ENDMETHODS

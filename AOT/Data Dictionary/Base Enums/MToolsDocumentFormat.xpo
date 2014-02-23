@@ -11,7 +11,7 @@ Formatversion: 1
     Id 50075
     PROPERTIES
       Name                #MToolsDocumentFormat
-      Label               #Формат документа
+      Label               #@MTO1020
       UseEnumValue        #Yes
     ENDPROPERTIES
     
@@ -19,14 +19,14 @@ Formatversion: 1
       #XMLSS
       PROPERTIES
         Name                #XMLSS
-        Label               #XMLSS
+        Label               #@MTO1021
         EnumValue           #0
       ENDPROPERTIES
       
       #RTF
       PROPERTIES
         Name                #RTF
-        Label               #RTF
+        Label               #@SYS25744
         EnumValue           #1
       ENDPROPERTIES
       

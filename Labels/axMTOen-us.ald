@@ -1,0 +1,27 @@
+﻿@MTO1000 Document file extension '%1' does not match the required ('%2')
+@MTO1001 Attempt to insert zero block more then one time
+@MTO1002 Attempt to insert block after document completion
+@MTO1003 Block does not exist
+@MTO1004 '%1' block does not found in the document template
+@MTO1005 Unable to load the document template
+@MTO1006 Unable to create the document
+@MTO1007 Unable to parse the document template
+@MTO1008 The document template should consist more than two blocks
+@MTO1009 Unable to remove temporary file '%1'
+@MTO1010 Format '%1' is not supported
+@MTO1011 There was one or more errors when opening the document in Excel
+@MTO1012 Prepared using Microsoft Dynamics AX
+@MTO1013 Page %1 of %2
+@MTO1014 Excel version is not supported (%1)
+@MTO1015 Data Type '%1' is not supported
+@MTO1016 Programmatic access to Office VBA project is denied
+@MTO1017 To configure access follow the instructions specified in browser
+@MTO1018 There was one or more errors when opening the document in Word
+@MTO1019 Document preparation failed
+@MTO1020 Document type
+@MTO1021 XMLSS
+@MTO1022 Left header
+@MTO1023 Right header
+@MTO1024 Left footer
+@MTO1025 Right footer
+@MTO1026 Header or footer type

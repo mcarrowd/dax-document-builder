@@ -11,6 +11,7 @@ Formatversion: 1
     Id 50043
     PROPERTIES
       Name                #MToolsHeaderFooter
+      Label               #@MTO1026
       UseEnumValue        #Yes
     ENDPROPERTIES
     
@@ -18,28 +19,28 @@ Formatversion: 1
       #LeftHeader
       PROPERTIES
         Name                #LeftHeader
-        Label               #Element1
+        Label               #@MTO1022
         EnumValue           #0
       ENDPROPERTIES
       
       #RightHeader
       PROPERTIES
         Name                #RightHeader
-        Label               #Element1
+        Label               #@MTO1023
         EnumValue           #1
       ENDPROPERTIES
       
       #LeftFooter
       PROPERTIES
         Name                #LeftFooter
-        Label               #Element1
+        Label               #@MTO1024
         EnumValue           #2
       ENDPROPERTIES
       
       #RightFooter
       PROPERTIES
         Name                #RightFooter
-        Label               #Element1
+        Label               #@MTO1025
         EnumValue           #3
       ENDPROPERTIES
       

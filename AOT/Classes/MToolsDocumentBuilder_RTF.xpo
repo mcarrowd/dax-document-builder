@@ -208,7 +208,7 @@ Formatversion: 1
         #    }
         #    else
         #    {
-        #        throw warning("Возникла одна или несколько ошибок при открытии документа в Word.");
+        #        throw warning("@MTO1018");
         #    }
         #}
       ENDSOURCE
