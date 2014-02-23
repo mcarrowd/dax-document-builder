@@ -1,0 +1,37 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: DBE
+
+; Microsoft Dynamics Enumtype : MToolsDocumentFormat unloaded
+; --------------------------------------------------------------------------------
+  ENUMTYPEVERSION 1
+  
+  ENUMTYPE #MToolsDocumentFormat
+    Id 50075
+    PROPERTIES
+      Name                #MToolsDocumentFormat
+      Label               #Формат документа
+      UseEnumValue        #Yes
+    ENDPROPERTIES
+    
+    TYPEELEMENTS
+      #XMLSS
+      PROPERTIES
+        Name                #XMLSS
+        Label               #XMLSS
+        EnumValue           #0
+      ENDPROPERTIES
+      
+      #RTF
+      PROPERTIES
+        Name                #RTF
+        Label               #RTF
+        EnumValue           #1
+      ENDPROPERTIES
+      
+    ENDTYPEELEMENTS
+  ENDENUMTYPE
+  
+
+***Element: END

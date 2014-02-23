@@ -606,6 +606,25 @@ Formatversion: 1
         #    }
         #}
       ENDSOURCE
+      SOURCE #construct
+        #public static MToolsDocumentBuilder construct(MToolsDocumentFormat _documentFormat, FileName _template, FileName _target = '')
+        #{
+        #    MToolsDocumentBuilder ret;
+        #;
+        #    switch (_documentFormat)
+        #    {
+        #        case MToolsDocumentFormat::XMLSS:
+        #            ret = new MToolsDocumentBuilder_XMLSS(_template, _target);
+        #            break;
+        #        case MToolsDocumentFormat::RTF:
+        #            ret = new MToolsDocumentBuilder_RTF(_template, _target);
+        #            break;
+        #        default:
+        #            throw error(strfmt("Формат %1 не поддерживается", _documentFormat));
+        #    }
+        #    return ret;
+        #}
+      ENDSOURCE
       SOURCE #getDateTimeDifference
         #public static int64 getDateTimeDifference(date _dateFrom, timeOfDay _timeFrom, date _dateTo, timeOfDay _timeTo)
         #{
