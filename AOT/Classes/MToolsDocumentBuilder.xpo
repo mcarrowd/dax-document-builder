@@ -287,7 +287,6 @@ Formatversion: 1
         #            throw error("@MTO1002");
         #        }
         #        block = templateBlocks.lookup(_blockNum);
-        #        MToolsDocumentBuilder::parseBlockByPlaceholders(block, _placeHolders);
         #        for(i = 1; i <= len; i++)
         #        {
         #            placeHolder = this.preparePlaceHolder(conpeek(_placeHolders, i));
@@ -413,6 +412,52 @@ Formatversion: 1
         #    if (_maxBufferSize != maxBufferSize) maxBufferSize = _maxBufferSize;
         #
         #    return maxBufferSize;
+        #}
+      ENDSOURCE
+      SOURCE #parseTemplateBlockByPlaceholders
+        #protected Struct parseTemplateBlockByPlaceholders(str _block, container _placeHolders)
+        #{
+        #    int len         = conlen(_placeHolders),
+        #        blockLen    = strlen(_block),
+        #        placeholderLen, placeholderIdx, i, pos, endPos, lastEndPos;
+        #    str placeholder;
+        #    Map posMap = new Map(Types::Integer, Types::Container);
+        #    MapEnumerator me;
+        #    List blockParts = new List(Types::String);
+        #    Array placeholderIndexes = new Array(Types::Integer);
+        #    Struct ret = new Struct();
+        #;
+        #    for (placeholderIdx = 1; placeholderIdx <= len; placeholderIdx ++)
+        #    {
+        #        placeholder = conpeek(_placeHolders, placeholderIdx);
+        #        placeholderLen = strlen(placeHolder);
+        #        pos = strscan(_block, placeholder, 1, blockLen);
+        #        while (pos)
+        #        {
+        #            endPos = pos + placeholderLen - 1;
+        #            posMap.insert(pos, [placeholderIdx, endPos]);
+        #            pos = strscan(_block, placeholder, pos + placeholderLen, blockLen - endPos);
+        #        }
+        #    }
+        #    me = posMap.getEnumerator();
+        #    while (me.moveNext())
+        #    {
+        #        pos = me.currentKey();
+        #        [placeholderIdx, endPos] = me.currentValue();
+        #        if (pos > lastEndPos)
+        #        {
+        #            i ++;
+        #            blockParts.addEnd(substr(_block, lastEndPos + 1, pos - lastEndPos - 1));
+        #            placeholderIndexes.value(i, placeholderIdx);
+        #            lastEndPos = endPos;
+        #        }
+        #    }
+        #    i ++;
+        #    blockParts.addEnd(substr(_block, lastEndPos + 1, blockLen - lastEndPos));
+        #    placeholderIndexes.value(i, 0);
+        #    ret.add(#Struct_BlockParts, blockParts);
+        #    ret.add(#Struct_PlaceholderIndexes, placeholderIndexes);
+        #    return ret;
         #}
       ENDSOURCE
       SOURCE #prepare
@@ -665,52 +710,6 @@ Formatversion: 1
         #        }
         #    }
         #    return connull();
-        #}
-      ENDSOURCE
-      SOURCE #parseBlockByPlaceholders
-        #public static Struct parseBlockByPlaceholders(str _block, container _placeHolders)
-        #{
-        #    int len         = conlen(_placeHolders),
-        #        blockLen    = strlen(_block),
-        #        placeholderLen, placeholderIdx, i, pos, endPos, lastEndPos;
-        #    str placeholder;
-        #    Map posMap = new Map(Types::Integer, Types::Container);
-        #    MapEnumerator me;
-        #    List blockParts = new List(Types::String);
-        #    Array placeholderIndexes = new Array(Types::Integer);
-        #    Struct ret = new Struct();
-        #;
-        #    for (placeholderIdx = 1; placeholderIdx <= len; placeholderIdx ++)
-        #    {
-        #        placeholder = conpeek(_placeHolders, placeholderIdx);
-        #        placeholderLen = strlen(placeHolder);
-        #        pos = strscan(_block, placeholder, 1, blockLen);
-        #        while (pos)
-        #        {
-        #            endPos = pos + placeholderLen - 1;
-        #            posMap.insert(pos, [placeholderIdx, endPos]);
-        #            pos = strscan(_block, placeholder, pos + placeholderLen, blockLen - endPos);
-        #        }
-        #    }
-        #    me = posMap.getEnumerator();
-        #    while (me.moveNext())
-        #    {
-        #        pos = me.currentKey();
-        #        [placeholderIdx, endPos] = me.currentValue();
-        #        if (pos > lastEndPos)
-        #        {
-        #            i ++;
-        #            blockParts.addEnd(substr(_block, lastEndPos + 1, pos - lastEndPos - 1));
-        #            placeholderIndexes.value(i, placeholderIdx);
-        #            lastEndPos = endPos;
-        #        }
-        #    }
-        #    i ++;
-        #    blockParts.addEnd(substr(_block, lastEndPos + 1, blockLen - lastEndPos));
-        #    placeholderIndexes.value(i, 0);
-        #    ret.add(#Struct_BlockParts, blockParts);
-        #    ret.add(#Struct_PlaceholderIndexes, placeholderIndexes);
-        #    return ret;
         #}
       ENDSOURCE
       SOURCE #parseQuotedTokens
