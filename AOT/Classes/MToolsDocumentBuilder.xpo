@@ -314,13 +314,7 @@ Formatversion: 1
         #        {
         #            throw error("@MTO1002");
         #        }
-        #        block = templateBlocks.lookup(_blockNum);
-        #        for(i = 1; i <= len; i++)
-        #        {
-        #            placeHolder = this.preparePlaceHolder(conpeek(_placeHolders, i));
-        #            data        = this.prepareDataItem(conpeek(_data, i));
-        #            block       = strReplace(block, placeHolder, data);
-        #        }
+        #        block = this.replacePlaceholdersWithData(_blockNum, _placeHolders, _data);
         #        this.bufferAppend(block);
         #        isDocumentEmpty = false;
         #        if(_blockNum == lastBlock)
@@ -458,7 +452,7 @@ Formatversion: 1
         #;
         #    for (placeholderIdx = 1; placeholderIdx <= len; placeholderIdx ++)
         #    {
-        #        placeholder = conpeek(_placeHolders, placeholderIdx);
+        #        placeholder = this.preparePlaceHolder(conpeek(_placeHolders, placeholderIdx));
         #        placeholderLen = strlen(placeHolder);
         #        pos = strscan(_block, placeholder, 1, blockLen);
         #        while (pos)
@@ -605,6 +599,33 @@ Formatversion: 1
         #        throw error(getCLRExceprionText(clrException));
         #    }
         #    CodeAccessPermission::revertAssert();
+        #}
+      ENDSOURCE
+      SOURCE #replacePlaceholdersWithData
+        #protected str replacePlaceholdersWithData(int _blockNum, container _placeHolders, container _data)
+        #{
+        #    Struct parsedTemplateBlock;
+        #    List blockParts;
+        #    Array placeholderIndexes;
+        #    listEnumerator le;
+        #    int i, placeholderIndex;
+        #    str ret;
+        #;
+        #    parsedTemplateBlock = this.getParsedTemplateBlock(_blockNum, _placeHolders);
+        #    blockParts = parsedTemplateBlock.value(#Struct_BlockParts);
+        #    placeholderIndexes = parsedTemplateBlock.value(#Struct_PlaceholderIndexes);
+        #    le = blockParts.getEnumerator();
+        #    while (le.moveNext())
+        #    {
+        #        i ++;
+        #        ret += le.current();
+        #        placeholderIndex = placeholderIndexes.value(i);
+        #        if (placeholderIndex)
+        #        {
+        #            ret += this.prepareDataItem(conpeek(_data, placeholderIndex));
+        #        }
+        #    }
+        #    return ret;
         #}
       ENDSOURCE
       SOURCE #save
