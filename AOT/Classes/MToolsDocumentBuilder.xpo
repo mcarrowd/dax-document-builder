@@ -63,7 +63,8 @@ Formatversion: 1
         #                    target;
         #    str             templateData;
         #    Map             templateBlocks,
-        #                    templateBlockNames;
+        #                    templateBlockNames,
+        #                    parsedTemplateBlocks;
         #    int             lastBlock;
         #    TextBuffer      buffer;
         #    int             maxBufferSize;
@@ -148,6 +149,33 @@ Formatversion: 1
         #        streamWriter.Flush();
         #        buffer.setText('');
         #    }
+        #}
+      ENDSOURCE
+      SOURCE #getParsedTemplateBlock
+        #protected Struct getParsedTemplateBlock(int _blockNum, container _placeholders)
+        #{
+        #    Map parsedTemplateBlockCache;
+        #    Struct ret;
+        #;
+        #    if (parsedTemplateBlocks.exists(_blockNum))
+        #    {
+        #        parsedTemplateBlockCache = parsedTemplateBlocks.lookup(_blockNum);
+        #    }
+        #    else
+        #    {
+        #        parsedTemplateBlockCache = new Map(Types::Container, Types::Class);
+        #        parsedTemplateBlocks.insert(_blockNum, parsedTemplateBlockCache);
+        #    }
+        #    if (parsedTemplateBlockCache.exists(_placeholders))
+        #    {
+        #        ret = parsedTemplateBlockCache.lookup(_placeholders);
+        #    }
+        #    else
+        #    {
+        #        ret = this.parseTemplateBlockByPlaceholders(templateBlocks.lookup(_blockNum), _placeholders);
+        #        parsedTemplateBlockCache.insert(_placeholders, ret);
+        #    }
+        #    return ret;
         #}
       ENDSOURCE
       SOURCE #getTempFile
@@ -350,6 +378,7 @@ Formatversion: 1
         #    buffer             = new TextBuffer();
         #    templateBlocks     = new Map(Types::Integer, Types::String);
         #    templateBlockNames = new Map(Types::String, Types::Integer);
+        #    parsedTemplateBlocks = new Map(Types::Integer, Types::Class);
         #
         #    template = _template;
         #    target   = _target;
