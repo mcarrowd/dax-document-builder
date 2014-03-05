@@ -63,7 +63,8 @@ Formatversion: 1
         #                    target;
         #    str             templateData;
         #    Map             templateBlocks,
-        #                    templateBlockNames;
+        #                    templateBlockNames,
+        #                    parsedTemplateBlocks;
         #    int             lastBlock;
         #    TextBuffer      buffer;
         #    int             maxBufferSize;
@@ -83,6 +84,9 @@ Formatversion: 1
         #    #define.zeroBlockName('zero')
         #    #define.temporaryFolderName('DAXXMLSS')
         #    #define.temporaryFileLifeTime(28800)
+        #
+        #    #define.Struct_BlockParts('BlockParts')
+        #    #define.Struct_PlaceholderIndexes('PlaceholderIndexes')
         #}
       ENDSOURCE
       SOURCE #defaultBlockNameLeftQuote
@@ -145,6 +149,33 @@ Formatversion: 1
         #        streamWriter.Flush();
         #        buffer.setText('');
         #    }
+        #}
+      ENDSOURCE
+      SOURCE #getParsedTemplateBlock
+        #protected Struct getParsedTemplateBlock(int _blockNum, container _placeholders)
+        #{
+        #    Map parsedTemplateBlockCache;
+        #    Struct ret;
+        #;
+        #    if (parsedTemplateBlocks.exists(_blockNum))
+        #    {
+        #        parsedTemplateBlockCache = parsedTemplateBlocks.lookup(_blockNum);
+        #    }
+        #    else
+        #    {
+        #        parsedTemplateBlockCache = new Map(Types::Container, Types::Class);
+        #        parsedTemplateBlocks.insert(_blockNum, parsedTemplateBlockCache);
+        #    }
+        #    if (parsedTemplateBlockCache.exists(_placeholders))
+        #    {
+        #        ret = parsedTemplateBlockCache.lookup(_placeholders);
+        #    }
+        #    else
+        #    {
+        #        ret = this.parseTemplateBlockByPlaceholders(templateBlocks.lookup(_blockNum), _placeholders);
+        #        parsedTemplateBlockCache.insert(_placeholders, ret);
+        #    }
+        #    return ret;
         #}
       ENDSOURCE
       SOURCE #getTempFile
@@ -283,13 +314,7 @@ Formatversion: 1
         #        {
         #            throw error("@MTO1002");
         #        }
-        #        block = templateBlocks.lookup(_blockNum);
-        #        for(i = 1; i <= len; i++)
-        #        {
-        #            placeHolder = this.preparePlaceHolder(conpeek(_placeHolders, i));
-        #            data        = this.prepareDataItem(conpeek(_data, i));
-        #            block       = strReplace(block, placeHolder, data);
-        #        }
+        #        block = this.replacePlaceholdersWithData(_blockNum, _placeHolders, _data);
         #        this.bufferAppend(block);
         #        isDocumentEmpty = false;
         #        if(_blockNum == lastBlock)
@@ -347,6 +372,7 @@ Formatversion: 1
         #    buffer             = new TextBuffer();
         #    templateBlocks     = new Map(Types::Integer, Types::String);
         #    templateBlockNames = new Map(Types::String, Types::Integer);
+        #    parsedTemplateBlocks = new Map(Types::Integer, Types::Class);
         #
         #    template = _template;
         #    target   = _target;
@@ -409,6 +435,52 @@ Formatversion: 1
         #    if (_maxBufferSize != maxBufferSize) maxBufferSize = _maxBufferSize;
         #
         #    return maxBufferSize;
+        #}
+      ENDSOURCE
+      SOURCE #parseTemplateBlockByPlaceholders
+        #protected Struct parseTemplateBlockByPlaceholders(str _block, container _placeHolders)
+        #{
+        #    int len         = conlen(_placeHolders),
+        #        blockLen    = strlen(_block),
+        #        placeholderLen, placeholderIdx, i, pos, endPos, lastEndPos;
+        #    str placeholder;
+        #    Map posMap = new Map(Types::Integer, Types::Container);
+        #    MapEnumerator me;
+        #    List blockParts = new List(Types::String);
+        #    Array placeholderIndexes = new Array(Types::Integer);
+        #    Struct ret = new Struct();
+        #;
+        #    for (placeholderIdx = 1; placeholderIdx <= len; placeholderIdx ++)
+        #    {
+        #        placeholder = this.preparePlaceHolder(conpeek(_placeHolders, placeholderIdx));
+        #        placeholderLen = strlen(placeHolder);
+        #        pos = strscan(_block, placeholder, 1, blockLen);
+        #        while (pos)
+        #        {
+        #            endPos = pos + placeholderLen - 1;
+        #            posMap.insert(pos, [placeholderIdx, endPos]);
+        #            pos = strscan(_block, placeholder, pos + placeholderLen, blockLen - endPos);
+        #        }
+        #    }
+        #    me = posMap.getEnumerator();
+        #    while (me.moveNext())
+        #    {
+        #        pos = me.currentKey();
+        #        [placeholderIdx, endPos] = me.currentValue();
+        #        if (pos > lastEndPos)
+        #        {
+        #            i ++;
+        #            blockParts.addEnd(substr(_block, lastEndPos + 1, pos - lastEndPos - 1));
+        #            placeholderIndexes.value(i, placeholderIdx);
+        #            lastEndPos = endPos;
+        #        }
+        #    }
+        #    i ++;
+        #    blockParts.addEnd(substr(_block, lastEndPos + 1, blockLen - lastEndPos));
+        #    placeholderIndexes.value(i, 0);
+        #    ret.add(#Struct_BlockParts, blockParts);
+        #    ret.add(#Struct_PlaceholderIndexes, placeholderIndexes);
+        #    return ret;
         #}
       ENDSOURCE
       SOURCE #prepare
@@ -527,6 +599,33 @@ Formatversion: 1
         #        throw error(getCLRExceprionText(clrException));
         #    }
         #    CodeAccessPermission::revertAssert();
+        #}
+      ENDSOURCE
+      SOURCE #replacePlaceholdersWithData
+        #protected str replacePlaceholdersWithData(int _blockNum, container _placeHolders, container _data)
+        #{
+        #    Struct parsedTemplateBlock;
+        #    List blockParts;
+        #    Array placeholderIndexes;
+        #    listEnumerator le;
+        #    int i, placeholderIndex;
+        #    str ret;
+        #;
+        #    parsedTemplateBlock = this.getParsedTemplateBlock(_blockNum, _placeHolders);
+        #    blockParts = parsedTemplateBlock.value(#Struct_BlockParts);
+        #    placeholderIndexes = parsedTemplateBlock.value(#Struct_PlaceholderIndexes);
+        #    le = blockParts.getEnumerator();
+        #    while (le.moveNext())
+        #    {
+        #        i ++;
+        #        ret += le.current();
+        #        placeholderIndex = placeholderIndexes.value(i);
+        #        if (placeholderIndex)
+        #        {
+        #            ret += this.prepareDataItem(conpeek(_data, placeholderIndex));
+        #        }
+        #    }
+        #    return ret;
         #}
       ENDSOURCE
       SOURCE #save
